@@ -1,0 +1,1013 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Farbpaletten für wissenschaftliche Abbildungen</title>
+<meta name="version" content="1.2">
+<meta name="author" content="Chris Spatschek">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Serif:wght@600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --paper:#F2F4F6; --panel:#FFFFFF; --ink:#18202C; --mute:#5A6474; --rule:#D3D9E0; --soft:#E7EBF0;
+  --focus:#2F6FEB; --warn:#B4441C; --ok:#2E7D4F;
+  --sans:"IBM Plex Sans",-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+  --serif:"IBM Plex Serif",Georgia,"Times New Roman",serif;
+  --mono:"IBM Plex Mono",ui-monospace,Menlo,Consolas,monospace;
+  color-scheme:light;
+}
+@media (prefers-color-scheme:dark){
+  :root{--paper:#13171D;--panel:#1B2129;--ink:#E6EAF0;--mute:#9AA5B3;--rule:#2E3641;--soft:#242B34;--warn:#F08A5D;--ok:#6FCF97;color-scheme:dark}
+}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--sans);font-size:15px;line-height:1.5}
+button,input,select{font:inherit;color:inherit}
+:focus-visible{outline:2px solid var(--focus);outline-offset:2px}
+.wrap{max-width:1500px;margin:0 auto;padding:28px 28px 60px}
+
+header.top{display:flex;align-items:flex-end;justify-content:space-between;gap:24px;flex-wrap:wrap;margin-bottom:22px}
+h1{font-family:var(--serif);font-weight:700;font-size:clamp(28px,3.4vw,44px);line-height:1.05;margin:0;letter-spacing:-.01em}
+header.top p{margin:6px 0 0;color:var(--mute);max-width:62ch}
+
+/* Palette-Leiste */
+.bar{display:flex;gap:12px;align-items:center;flex-wrap:wrap;margin-bottom:10px}
+.bar label.inline{display:flex;align-items:center;gap:8px;color:var(--mute);font-size:14px}
+.name{font-family:var(--mono);font-size:14px;padding:6px 10px;border:1px solid var(--rule);background:var(--panel);border-radius:4px;width:240px}
+.btn{border:1px solid var(--rule);background:var(--panel);padding:6px 12px;border-radius:4px;cursor:pointer;font-size:14px}
+.btn:hover{border-color:var(--ink)}
+.btn.primary{background:var(--ink);color:var(--paper);border-color:var(--ink)}
+.spacer{flex:1}
+input[type=range]{accent-color:var(--ink);width:140px}
+
+.strip{display:flex;height:168px;border-radius:6px;overflow:hidden;overflow-x:auto;border:1px solid var(--rule);background:var(--panel)}
+.sw{position:relative;flex:1 0 76px;min-width:76px;display:flex;flex-direction:column;justify-content:flex-end;cursor:grab}
+.sw.dragover{outline:3px dashed var(--ink);outline-offset:-6px}
+.sw label.fill{position:absolute;inset:0;cursor:pointer}
+.sw label.fill input{position:absolute;opacity:0;width:1px;height:1px;bottom:0;left:0}
+.sw .hex{position:relative;z-index:2;margin:0 8px 10px;font-family:var(--mono);font-size:14px;font-weight:500;background:transparent;border:0;border-bottom:1px solid currentColor;padding:2px 0;width:calc(100% - 16px);text-transform:uppercase}
+.sw .idx{position:relative;z-index:2;margin:0 8px 2px;font-size:12px;opacity:.8}
+.sw .tools{position:absolute;z-index:2;top:6px;right:6px;display:flex;gap:2px;opacity:0;transition:opacity .15s}
+.sw:hover .tools,.sw:focus-within .tools{opacity:1}
+.sw .tools button{border:0;background:rgba(255,255,255,.85);color:#18202C;width:24px;height:24px;border-radius:3px;cursor:pointer;font-size:13px;line-height:1}
+.sw .copy{position:absolute;z-index:2;top:36px;left:6px;border:0;background:rgba(255,255,255,.85);color:#18202C;border-radius:3px;font-size:12px;padding:3px 7px;cursor:pointer;opacity:0;transition:opacity .15s}
+.sw:hover .copy,.sw:focus-within .copy{opacity:1}
+.add{flex:0 0 64px;border:0;border-left:1px dashed var(--rule);background:var(--soft);cursor:pointer;font-size:26px;color:var(--mute)}
+.add:hover{color:var(--ink)}
+.hint{font-size:13px;color:var(--mute);margin:6px 0 0}
+
+/* Hauptlayout */
+.layout{display:grid;grid-template-columns:310px minmax(0,1fr);gap:28px;margin-top:28px}
+aside section,.main section{margin-bottom:26px}
+h2{font-family:var(--serif);font-size:20px;margin:0 0 10px;font-weight:600}
+h3{font-size:14px;margin:0;font-weight:600}
+.box{background:var(--panel);border:1px solid var(--rule);border-radius:6px;padding:14px}
+
+.drop{border:1.5px dashed var(--rule);border-radius:6px;padding:18px 12px;text-align:center;color:var(--mute);cursor:pointer;font-size:14px;background:var(--panel)}
+.drop .touch{display:none}
+.drop.over{border-color:var(--ink);color:var(--ink)}
+.drop strong{color:var(--ink);font-weight:600}
+#imgWrap{position:relative;margin-top:10px;display:none}
+#imgCanvas{display:block;width:100%;height:auto;border-radius:4px;cursor:crosshair;outline:1px solid var(--rule)}
+#marks{position:absolute;inset:0;pointer-events:none}
+.mk{position:absolute;pointer-events:auto;width:22px;height:22px;margin:-11px 0 0 -11px;border-radius:50%;border:2px solid #fff;box-shadow:0 0 0 1.5px rgba(0,0,0,.7),0 1px 4px rgba(0,0,0,.45);cursor:grab;padding:0;font-size:10px;font-weight:600;line-height:1;touch-action:none;transition:transform .12s}
+.mk.drag{cursor:grabbing;transform:scale(1.4);z-index:3}
+.mk.hl{transform:scale(1.4);z-index:3}
+.opts{display:grid;gap:8px;margin-top:10px;font-size:14px}
+.opts label{display:flex;align-items:center;gap:8px}
+.opts select{padding:4px 6px;border:1px solid var(--rule);border-radius:4px;background:var(--panel)}
+
+.libsearch{width:100%;padding:7px 10px;border:1px solid var(--rule);border-radius:4px;background:var(--panel);margin-bottom:10px;font-size:14px}
+.lib details{border-top:1px solid var(--rule);padding:2px 0 8px}
+.lib details:first-child{border-top:0}
+.lib summary{cursor:pointer;padding:6px 0;color:var(--mute);font-size:14px;list-style-position:outside}
+.lib summary span{font-size:12px;opacity:.75;margin-left:4px}
+.lib details[open] summary{color:var(--ink)}
+.chips{display:grid;grid-template-columns:1fr 1fr;gap:6px}
+.chip{display:block;text-align:left;border:1px solid var(--rule);background:var(--panel);border-radius:4px;padding:5px 6px 6px;cursor:pointer;font-size:12.5px;position:relative}
+.chip:hover{border-color:var(--ink)}
+.chip.on{border-color:var(--ink);box-shadow:inset 0 0 0 1px var(--ink)}
+.chip i{display:block;height:12px;border-radius:2px;margin-bottom:4px}
+.chip .del{position:absolute;top:2px;right:4px;font-size:13px;color:var(--mute)}
+
+.adjust{display:flex;align-items:center;gap:8px 14px;flex-wrap:wrap;margin-top:12px;padding:10px 12px;background:var(--panel);border:1px solid var(--rule);border-radius:6px}
+.adjust h2{margin:0;font-size:17px}
+.ops{display:flex;flex-wrap:wrap;gap:6px;align-items:center}
+.ops .btn{font-size:13px;padding:5px 10px}
+.ops .sep{width:1px;height:22px;background:var(--rule);margin:0 4px}
+
+.main .head{display:flex;align-items:baseline;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-bottom:10px}
+.main .head h2{margin:0}
+.seg{display:inline-flex;border:1px solid var(--rule);border-radius:4px;overflow:hidden;background:var(--panel)}
+.seg button{border:0;background:transparent;padding:5px 11px;cursor:pointer;font-size:13px}
+.seg button[aria-pressed=true]{background:var(--ink);color:var(--paper)}
+.controls{display:flex;gap:14px;flex-wrap:wrap;align-items:center;font-size:14px;color:var(--mute)}
+.controls select{padding:4px 6px;border:1px solid var(--rule);border-radius:4px;background:var(--panel);color:var(--ink)}
+
+.figs{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(300px,100%),1fr));gap:14px}
+.panel{background:var(--panel);border:1px solid var(--rule);border-radius:6px;padding:10px 10px 6px}
+.panel header{display:flex;align-items:center;gap:8px;margin-bottom:4px}
+.letter{display:inline-grid;place-items:center;width:20px;height:20px;background:var(--ink);color:var(--paper);font-weight:600;font-size:12px;border-radius:2px}
+.panel header h3{flex:1;font-weight:500}
+.panel header button{border:0;background:transparent;color:var(--mute);cursor:pointer;font-size:12px;padding:2px 4px}
+.panel header button:hover{color:var(--ink);text-decoration:underline}
+.panel svg{display:block;width:100%;height:auto;border-radius:3px}
+
+.checks{display:grid;grid-template-columns:minmax(0,1.4fr) minmax(0,1fr);gap:14px}
+.simrow{display:grid;grid-template-columns:120px 1fr 92px;gap:10px;align-items:center;margin-bottom:8px;font-size:13.5px}
+.simrow .s{display:flex;height:26px;border-radius:3px;overflow:hidden}
+.simrow .s span{flex:1}
+.simrow .v{font-family:var(--mono);font-size:12.5px;text-align:right}
+.simrow .v.bad{color:var(--warn)}
+.simrow .v.good{color:var(--ok)}
+.roles{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.role{border:1px solid var(--rule);border-radius:4px;overflow:hidden;font-size:12.5px;cursor:pointer;background:var(--panel);padding:0;text-align:left}
+.role i{display:block;height:34px}
+.role span{display:block;padding:4px 6px}
+.role b{font-family:var(--mono);font-weight:500}
+.lprof{margin-top:12px}
+.note{font-size:13px;color:var(--mute);margin:8px 0 0}
+
+.tabs{display:flex;flex-wrap:wrap;gap:0;border-bottom:1px solid var(--rule)}
+.tabs button{border:0;background:transparent;padding:8px 12px;cursor:pointer;font-size:14px;color:var(--mute);border-bottom:2px solid transparent;margin-bottom:-1px}
+.tabs button[aria-selected=true]{color:var(--ink);border-bottom-color:var(--ink);font-weight:500}
+pre.code{margin:0;padding:14px 16px;background:var(--soft);border:1px solid var(--rule);border-top:0;border-radius:0 0 6px 6px;font-family:var(--mono);font-size:13px;line-height:1.55;overflow:auto;max-height:340px;white-space:pre}
+.codebar{display:flex;gap:8px;margin-top:10px;flex-wrap:wrap}
+
+.toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%) translateY(20px);background:var(--ink);color:var(--paper);padding:8px 14px;border-radius:4px;font-size:14px;opacity:0;pointer-events:none;transition:opacity .2s,transform .2s;z-index:50}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+
+.sim-deut{filter:url(#f-deut)} .sim-prot{filter:url(#f-prot)} .sim-trit{filter:url(#f-trit)} .sim-gray{filter:url(#f-gray)}
+
+/* ---------- Tablet ---------- */
+@media (max-width:1100px){
+  .layout{grid-template-columns:minmax(0,1fr);gap:20px}
+  .layout>*,aside>*{min-width:0}
+  aside{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:24px;align-items:start}
+  aside section{margin-bottom:0}
+  .checks{grid-template-columns:1fr 1fr}
+  .name{width:190px}
+}
+@media (max-width:860px){
+  .checks{grid-template-columns:1fr}
+}
+/* ---------- Smartphone ---------- */
+@media (max-width:700px){
+  html,body{font-size:14.5px}
+  .wrap{padding:16px 14px 40px}
+  header.top{margin-bottom:16px}
+  header.top p{font-size:14px}
+  aside{grid-template-columns:minmax(0,1fr);gap:22px}
+  .adjust>*,aside>*{min-width:0}
+  .ops{max-width:100%}
+  .bar{gap:8px}
+  .bar label.inline{flex:1 1 100%}
+  .name{flex:1;width:auto;min-width:0}
+  .bar label.inline input[type=range]{flex:1;width:auto}
+  .bar .spacer{display:none}
+  .bar .btn{flex:1}
+  .strip{display:grid;grid-template-columns:repeat(auto-fill,minmax(104px,1fr));height:auto;overflow:hidden}
+  .sw{min-width:0;height:124px}
+  .sw .hex{font-size:13px}
+  .add{min-height:124px;border-left:0;border-top:1px dashed var(--rule)}
+  .adjust{flex-direction:column;align-items:stretch;padding:10px}
+  .ops{flex-wrap:nowrap;overflow-x:auto;padding-bottom:4px;-webkit-overflow-scrolling:touch;scrollbar-width:thin}
+  .ops .btn{white-space:nowrap;flex:0 0 auto}
+  .chips{display:flex;overflow-x:auto;gap:6px;padding-bottom:4px;scrollbar-width:thin}
+  .chip{flex:0 0 128px}
+  .main .head{flex-direction:column;align-items:stretch}
+  .controls{flex-direction:column;align-items:stretch;gap:10px}
+  .controls label{display:flex;flex-direction:column;gap:4px}
+  .controls label:has(input[type=checkbox]){flex-direction:row;align-items:center}
+  .controls select{width:100%;padding:8px}
+  .seg{align-self:flex-start}
+  .figs{gap:10px}
+  .panel{padding:8px 6px 4px}
+  .simrow{grid-template-columns:86px 1fr 64px;gap:8px;font-size:12.5px}
+  .simrow .v{font-size:11.5px}
+  .roles{grid-template-columns:repeat(2,1fr)}
+  .tabs{flex-wrap:nowrap;overflow-x:auto;scrollbar-width:thin}
+  .tabs button{white-space:nowrap;flex:0 0 auto}
+  pre.code{font-size:12px;max-height:300px;padding:12px}
+  .codebar .btn{flex:1 1 calc(50% - 4px)}
+  .codebar .btn.primary{flex-basis:100%}
+  .toast{bottom:16px;max-width:calc(100% - 32px)}
+}
+/* ---------- Touch-Bedienung ---------- */
+@media (hover:none),(pointer:coarse){
+  .sw .tools,.sw .copy{opacity:1}
+  .sw .tools button{width:30px;height:30px;font-size:16px}
+  .sw .copy{top:42px;font-size:11.5px;padding:5px 8px}
+  .btn,.seg button,.tabs button{min-height:40px}
+  .chip{padding:7px 8px 8px}
+  .mk{width:30px;height:30px;margin:-15px 0 0 -15px;font-size:12px}
+  .mk::after{content:"";position:absolute;inset:-10px;border-radius:50%}
+  .drop .mouse{display:none}
+  .drop .touch{display:inline}
+  .sw{cursor:default;min-width:104px;flex-basis:104px}
+}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <filter id="f-prot"><feColorMatrix type="matrix" values="0.152286 1.052583 -0.204868 0 0  0.114503 0.786281 0.099216 0 0  -0.003882 -0.048116 1.051998 0 0  0 0 0 1 0"/></filter>
+    <filter id="f-deut"><feColorMatrix type="matrix" values="0.367322 0.860646 -0.227968 0 0  0.280085 0.672501 0.047413 0 0  -0.011820 0.042940 0.968881 0 0  0 0 0 1 0"/></filter>
+    <filter id="f-trit"><feColorMatrix type="matrix" values="1.255528 -0.076749 -0.178779 0 0  -0.078411 0.930809 0.147602 0 0  0.004733 0.691367 0.303900 0 0  0 0 0 1 0"/></filter>
+    <filter id="f-gray"><feColorMatrix type="saturate" values="0"/></filter>
+  </defs>
+</svg>
+
+<div class="wrap">
+  <header class="top">
+    <div>
+      <h1>Farbpaletten für wissenschaftliche Abbildungen</h1>
+      <p>Bild hochladen oder eine Standardpalette wählen, Farben anpassen und direkt in typischen Diagrammen prüfen. Der Code für Python, R, MATLAB und andere Programme steht unten zum Kopieren bereit.</p>
+    </div>
+  </header>
+
+  <div class="bar">
+    <label class="inline">Name <input class="name" id="palName" spellcheck="false"></label>
+    <label class="inline">Anzahl <input type="range" id="count" min="2" max="16" value="7"> <b id="countVal">7</b></label>
+    <span class="spacer"></span>
+    <button class="btn" id="copyAll">Hex-Codes kopieren</button>
+    <button class="btn" id="savePal">Palette speichern</button>
+  </div>
+  <div class="strip" id="strip" aria-label="Aktuelle Palette"></div>
+  <p class="hint">Farbfeld antippen oder anklicken zum Ändern, Hex-Code direkt überschreiben, mit ‹ › oder per Ziehen umsortieren.</p>
+  <div class="adjust">
+    <h2>Anpassen</h2>
+    <div class="ops">
+      <button class="btn" data-op="lighter">Heller</button>
+      <button class="btn" data-op="darker">Dunkler</button>
+      <button class="btn" data-op="sat">Kräftiger</button>
+      <button class="btn" data-op="desat">Gedeckter</button>
+      <span class="sep"></span>
+      <button class="btn" data-op="hueL">Farbton −10°</button>
+      <button class="btn" data-op="hueR">Farbton +10°</button>
+      <span class="sep"></span>
+      <button class="btn" data-op="reverse">Umkehren</button>
+      <button class="btn" data-op="sortL">Nach Helligkeit</button>
+      <button class="btn" data-op="sortH">Nach Farbton</button>
+      <button class="btn" data-op="even" title="Verteilt die Helligkeit gleichmäßig von hell nach dunkel, ohne die Farbtöne zu ändern – nützlich für sequenzielle Skalen">Helligkeit angleichen</button>
+    </div>
+  </div>
+
+  <div class="layout">
+    <aside>
+      <section>
+        <h2>Aus Bild extrahieren</h2>
+        <div class="drop" id="drop" tabindex="0" role="button" aria-label="Bild auswählen">
+          <span class="mouse"><strong>Bild hierher ziehen</strong> oder klicken<br>Einfügen mit Strg+V funktioniert auch</span>
+          <span class="touch"><strong>Bild auswählen</strong><br>aus Fotos, Dateien oder Kamera</span>
+        </div>
+        <input type="file" id="file" accept="image/*" hidden>
+        <div id="imgWrap"><canvas id="imgCanvas" aria-label="Hochgeladenes Bild, Klick übernimmt die Farbe"></canvas><div id="marks"></div></div>
+        <div class="opts" id="imgOpts" hidden>
+          <label><input type="checkbox" id="ignoreGray" checked> Weiß, Schwarz und Grautöne ignorieren</label>
+          <label>Sortierung
+            <select id="sortBy">
+              <option value="L">Hell nach dunkel</option>
+              <option value="hue">Farbton</option>
+              <option value="count">Häufigkeit</option>
+            </select>
+          </label>
+          <span class="note" style="margin:0">Die Markierungen zeigen, woher die Farben stammen. Verschieben Sie eine Markierung, um die Farbe neu aus dem Bild zu nehmen (auch mit Pfeiltasten). Klick ins Bild fügt eine Farbe hinzu.</span>
+        </div>
+      </section>
+
+      <section>
+        <h2>Bibliothek</h2>
+        <input type="search" id="libSearch" class="libsearch" placeholder="Palette suchen, z. B. Nature, Ozean, barrierearm" aria-label="Palette suchen">
+        <div class="lib" id="lib"></div>
+      </section>
+
+    </aside>
+
+    <div class="main">
+      <section>
+        <div class="head">
+          <h2>Vorschau in Abbildungen</h2>
+          <div class="controls">
+            <label>Palettentyp
+              <select id="kind">
+                <option value="qual">Qualitativ (Kategorien)</option>
+                <option value="seq">Sequenziell</option>
+                <option value="div">Divergierend</option>
+              </select>
+            </label>
+            <label>Sehen wie
+              <select id="sim">
+                <option value="none">Normalsichtig</option>
+                <option value="deut">Deuteranopie</option>
+                <option value="prot">Protanopie</option>
+                <option value="trit">Tritanopie</option>
+                <option value="gray">Graustufen (Druck)</option>
+              </select>
+            </label>
+            <label><input type="checkbox" id="skipLight" checked> Sehr helle Farben nur als Hintergrund</label>
+            <div class="seg" role="group" aria-label="Hintergrund der Abbildungen">
+              <button id="bgWhite" aria-pressed="true">Weiß</button>
+              <button id="bgBlack" aria-pressed="false">Schwarz</button>
+            </div>
+          </div>
+        </div>
+        <div class="figs" id="figs"></div>
+      </section>
+
+      <section>
+        <h2>Unterscheidbarkeit und Rollen</h2>
+        <div class="checks">
+          <div class="box">
+            <h3 style="margin-bottom:10px">Kleinster Farbabstand der Datenfarben (ΔE, OKLab)</h3>
+            <div id="simRows"></div>
+            <p class="note">Ab etwa 10 sind Farben gut auseinanderzuhalten, unter 5 kaum noch. Grundlage sind die Farben, die in Diagrammen als Kategorien verwendet werden.Quelle: <a href="https://bottosson.github.io/posts/oklab/">OKLab</a></p>
+            <div class="lprof" id="lprof"></div>
+          </div>
+          <div class="box">
+            <h3 style="margin-bottom:10px">Rollenvorschlag nach dem Beispielbild</h3>
+            <div class="roles" id="roles"></div>
+            <p class="note">Hellste Farbe als Hintergrund, dunkelste für Text und Achsen, die kräftigste als Hervorhebung. Klick kopiert den Hex-Code.</p>
+          </div>
+        </div>
+      </section>
+
+      <section>
+        <h2>Export</h2>
+        <div class="tabs" id="tabs" role="tablist"></div>
+        <pre class="code" id="code" tabindex="0"></pre>
+        <div class="codebar">
+          <button class="btn primary" id="copyCode">Code kopieren</button>
+          <button class="btn" id="dlCode">Als Datei speichern</button>
+          <button class="btn" id="dlGpl">GIMP/Inkscape-Palette (.gpl)</button>
+          <button class="btn" id="dlSvg">Palette als SVG</button>
+        </div>
+      </section>
+    </div>
+  </div>
+</div>
+<p class="note" style="text-align:center;margin:0 0 24px">Version 10 · Bibliothek startet zugeklappt</p>
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<script>
+/* ---------- Farbmathematik (OKLab) ---------- */
+const hex2rgb=h=>{h=h.replace('#','');if(h.length===3)h=h.split('').map(c=>c+c).join('');const n=parseInt(h,16);return[n>>16&255,n>>8&255,n&255]};
+const rgb2hex=c=>'#'+c.map(v=>Math.round(Math.max(0,Math.min(255,v))).toString(16).padStart(2,'0')).join('').toUpperCase();
+const s2l=c=>{c/=255;return c<=0.04045?c/12.92:Math.pow((c+0.055)/1.055,2.4)};
+const l2s=c=>{c=Math.max(0,Math.min(1,c));return 255*(c<=0.0031308?12.92*c:1.055*Math.pow(c,1/2.4)-0.055)};
+function lin2lab([r,g,b]){
+  const l=Math.cbrt(0.4122214708*r+0.5363325363*g+0.0514459929*b),
+        m=Math.cbrt(0.2119034982*r+0.6806995451*g+0.1073969566*b),
+        s=Math.cbrt(0.0883024619*r+0.2817188376*g+0.6299787005*b);
+  return[0.2104542553*l+0.7936177850*m-0.0040720468*s,1.9779984951*l-2.4285922050*m+0.4505937099*s,0.0259040371*l+0.7827717662*m-0.8086757660*s];
+}
+const rgb2lab=c=>lin2lab(c.map(s2l));
+function lab2lin([L,a,b]){
+  const l=(L+0.3963377774*a+0.2158037573*b)**3,m=(L-0.1055613458*a-0.0638541728*b)**3,s=(L-0.0894841775*a-1.2914855480*b)**3;
+  return[4.0767416621*l-3.3077115913*m+0.2309699292*s,-1.2684380046*l+2.6097574011*m-0.3413193965*s,-0.0041960863*l-0.7034186147*m+1.7076147010*s];
+}
+const lab2rgb=lab=>lab2lin(lab).map(l2s);
+const inGamut=lab=>lab2lin(lab).every(v=>v>=-0.0005&&v<=1.0005);
+const hex2lab=h=>rgb2lab(hex2rgb(h));
+const lab2hex=lab=>rgb2hex(lab2rgb(lab));
+function lch2hex(L,C,H){ // Chroma reduzieren, bis die Farbe darstellbar ist
+  L=Math.max(0,Math.min(1,L));C=Math.max(0,C);
+  let lo=0,hi=C;const mk=c=>[L,c*Math.cos(H),c*Math.sin(H)];
+  if(inGamut(mk(C)))return lab2hex(mk(C));
+  for(let i=0;i<18;i++){const m=(lo+hi)/2;inGamut(mk(m))?lo=m:hi=m}
+  return lab2hex(mk(lo));
+}
+const toLch=h=>{const[L,a,b]=hex2lab(h);return[L,Math.hypot(a,b),Math.atan2(b,a)]};
+const dE=(a,b)=>100*Math.hypot(a[0]-b[0],a[1]-b[1],a[2]-b[2]);
+function interp(cols,t){
+  if(cols.length===1)return cols[0];
+  t=Math.max(0,Math.min(1,t));const p=t*(cols.length-1),i=Math.min(cols.length-2,Math.floor(p)),u=p-i;
+  const A=hex2lab(cols[i]),B=hex2lab(cols[i+1]);
+  return lab2hex(A.map((v,k)=>v+(B[k]-v)*u));
+}
+const sample=(cols,n)=>Array.from({length:n},(_,i)=>interp(cols,n===1?0:i/(n-1)));
+const textOn=h=>hex2lab(h)[0]>0.68?'#18202C':'#FFFFFF';
+const SIM={
+  prot:[[0.152286,1.052583,-0.204868],[0.114503,0.786281,0.099216],[-0.003882,-0.048116,1.051998]],
+  deut:[[0.367322,0.860646,-0.227968],[0.280085,0.672501,0.047413],[-0.011820,0.042940,0.968881]],
+  trit:[[1.255528,-0.076749,-0.178779],[-0.078411,0.930809,0.147602],[0.004733,0.691367,0.303900]]
+};
+function simulate(h,type){
+  if(type==='none')return h;
+  if(type==='gray'){const L=hex2lab(h)[0];return lab2hex([L,0,0])}
+  const c=hex2rgb(h).map(s2l),M=SIM[type];
+  return rgb2hex(M.map(r=>l2s(r[0]*c[0]+r[1]*c[1]+r[2]*c[2])));
+}
+
+/* ---------- Bibliothek ---------- */
+const LIB=[
+ {g:'Sequenziell – wahrnehmungsgleichmäßig',items:[
+  {id:'viridis',n:'viridis',t:'seq',d:'Standard in matplotlib; farbfehlsichtig- und graustufentauglich',c:['#440154','#482878','#3E4989','#31688E','#26828E','#1F9E89','#35B779','#6ECE58','#B5DE2B','#FDE725']},
+  {id:'magma',n:'magma',t:'seq',c:['#000004','#180F3D','#440F76','#721F81','#9E2F7F','#CD4071','#F1605D','#FD9668','#FECA8D','#FCFDBF']},
+  {id:'inferno',n:'inferno',t:'seq',c:['#000004','#1B0C41','#4A0C6B','#781C6D','#A52C60','#CF4446','#ED6925','#FB9B06','#F7D13D','#FCFFA4']},
+  {id:'plasma',n:'plasma',t:'seq',c:['#0D0887','#46039F','#7201A8','#9C179E','#BD3786','#D8576B','#ED7953','#FB9F3A','#FDCA26','#F0F921']},
+  {id:'cividis',n:'cividis',t:'seq',d:'Optimiert für Farbfehlsichtigkeit (Nuñez et al. 2018)',c:['#00224E','#123570','#3B496C','#575D6D','#707173','#8A8779','#A69D75','#C4B56C','#E4CF5B','#FEE838']},
+  {id:'mako',n:'mako (seaborn)',t:'seq',c:['#0B0405','#2E1E3C','#413D7B','#37659E','#348FA7','#40B7AD','#8BDAB2','#DEF5E5']},
+  {id:'rocket',n:'rocket (seaborn)',t:'seq',c:['#03051A','#36193E','#701F57','#AE1759','#E13342','#F37651','#F6B48E','#FAEBDD']},
+  {id:'crest',n:'crest (seaborn)',t:'seq',c:['#89BF91','#6DB290','#57A490','#44948F','#33858D','#24768B','#1C6689','#215584','#28437B']},
+  {id:'flare',n:'flare (seaborn)',t:'seq',c:['#EB9872','#E77E63','#E2655C','#D64F5F','#C14168','#AA3A6E','#923371','#7A2E70','#62296A']},
+  {id:'iridescent',n:'Tol iridescent',t:'seq',d:'Paul Tol; auch bei Farbfehlsichtigkeit eindeutig',c:['#FEFBE9','#EDF1B8','#C9E5CE','#A4D6DD','#81C4E7','#86A8DE','#9C83BA','#8B5F80','#46353A']},
+  {id:'turbo',n:'turbo (Regenbogen)',t:'seq',d:'Verbesserter Regenbogen; nicht graustufentauglich, sparsam einsetzen',c:['#30123B','#4662D7','#36AAF9','#1AE4B6','#72FE5E','#C8EF34','#FABA39','#F66B19','#CA2A04','#7A0403']}]},
+ {g:'Sequenziell – ColorBrewer',items:[
+  {id:'blues',n:'Blues',t:'seq',c:['#F7FBFF','#DEEBF7','#C6DBEF','#9ECAE1','#6BAED6','#4292C6','#2171B5','#08519C','#08306B']},
+  {id:'greens',n:'Greens',t:'seq',c:['#F7FCF5','#E5F5E0','#C7E9C0','#A0D99B','#73C476','#40AA5D','#228A44','#006C2C','#00441B']},
+  {id:'purples',n:'Purples',t:'seq',c:['#FCFBFD','#EFEDF5','#DADAEB','#BCBDDC','#9E9AC8','#807CBA','#6950A3','#53268F','#3F007D']},
+  {id:'ylgnbu',n:'YlGnBu',t:'seq',c:['#FFFFD9','#EDF8B1','#C6E9B4','#7ECDBB','#40B5C4','#1D90C0','#225DA8','#243392','#081D58']},
+  {id:'ylorrd',n:'YlOrRd',t:'seq',c:['#FFFFCC','#FFEDA0','#FED976','#FEB24C','#FD8C3C','#FC4D2A','#E2191C','#BB0026','#800026']}]},
+ {g:'Crameri Scientific Colour Maps',items:[
+  {id:'batlow',n:'batlow',t:'seq',d:'Crameri et al. 2020, Nature Communications – Ersatz für Regenbogen-Skalen',c:['#011959','#0E3D5F','#1F5A60','#3E6D55','#657B3E','#918838','#C29144','#EE9D72','#FDB4A8','#FACCFA']},
+  {id:'lajolla',n:'lajolla',t:'seq',c:['#191900','#33220F','#592F22','#8F403D','#C7504B','#E0724F','#E79452','#EFB655','#F8DF7C','#FFFECB']},
+  {id:'lapaz',n:'lapaz',t:'seq',c:['#1A0C64','#232D7B','#2A4B8E','#36679D','#4C80A3','#6E95A1','#94A298','#C1B299','#EFD3C0','#FEF2F3']},
+  {id:'davos',n:'davos',t:'seq',c:['#00054A','#112C71','#285190','#43709D','#5E8598','#79968D','#99AD88','#CBD39F','#F3F3D2','#FEFEFE']},
+  {id:'oslo',n:'oslo',t:'seq',c:['#010101','#0D1B29','#13324F','#1F4C7B','#3869A8','#658AC7','#89A0CA','#ACB7CA','#D4D6DB','#FFFFFF']},
+  {id:'acton',n:'acton',t:'seq',c:['#260D40','#3E2E5E','#534C7A','#71618C','#93658F','#BD6992','#D586AA','#E0ACCA','#E9CEE4','#F0EAFA']},
+  {id:'hawaii',n:'hawaii',t:'seq',c:['#8C0273','#922A59','#964643','#996330','#9D831E','#97A92A','#80C55F','#65D99E','#6CEBDB','#B3F2FD']},
+  {id:'glasgow',n:'glasgow',t:'seq',c:['#361338','#4F1A23','#6A250C','#744500','#716311','#687C48','#60927D','#76AAB2','#A6BED8','#DBD3FF']},
+  {id:'vik',n:'vik',t:'div',c:['#001261','#02397A','#116496','#5496B7','#A7C9DA','#ECE5E0','#E1B8A0','#CC875F','#B75A26','#852206','#590008']},
+  {id:'roma',n:'roma',t:'div',c:['#7E1700','#974D13','#AC7726','#C1A343','#D2D484','#C0EAC3','#89DAD7','#4BB2CE','#2D88BE','#1E5FAC','#033198']},
+  {id:'bam',n:'bam',t:'div',c:['#65024B','#99377F','#C164A9','#DD9ACB','#F0D1E8','#F6F1F0','#E2EDD1','#ABCB86','#709E4B','#407626','#0D4C00']},
+  {id:'berlin',n:'berlin',t:'div',d:'Divergierend mit dunkler Mitte',c:['#9EB0FF','#62A6E0','#3280A6','#20526A','#112732','#190C09','#371000','#61200B','#964A36','#CA7B71','#FFADAD']}]},
+ {g:'Ozean & Geowissenschaften (cmocean)',items:[
+  {id:'thermal',n:'thermal',t:'seq',d:'Thyng et al. 2016, Oceanography – Temperatur',c:['#042333','#19337C','#563B9C','#83508F','#B15F82','#DF7064','#F99341','#F9C641','#E8FA5B']},
+  {id:'haline',n:'haline',t:'seq',d:'Salzgehalt',c:['#2A186C','#2034A2','#0F5B90','#297789','#3C9387','#50B07E','#7ACB67','#C4DD65','#FDEF9A']},
+  {id:'deep',n:'deep',t:'seq',d:'Wassertiefe',c:['#FDFECC','#BBE6AC','#78CEA3','#55AEA3','#488E9E','#3F6E97','#404C8B','#3B315A','#281A2C']},
+  {id:'ice',n:'ice',t:'seq',c:['#040613','#212041','#383975','#3F57A3','#427BB7','#589DC3','#7BBFD0','#B1DEE2','#EAFDFD']},
+  {id:'dense',n:'dense',t:'seq',c:['#E6F1F1','#B1D6E3','#86B9E3','#7397E4','#7871D5','#784DB2','#6E2D84','#591750','#360E24']},
+  {id:'balance',n:'balance',t:'div',c:['#181C43','#293E97','#1670BC','#599CBB','#AAC2CB','#F1ECEB','#DCB2A4','#CA765B','#B33826','#7E0E29','#3C0912']},
+  {id:'curl',n:'curl',t:'div',c:['#151D44','#1C4D60','#117D79','#5CA786','#B6CBB0','#FDF5F4','#E6B8A2','#D37669','#AE4060','#75195D','#340D35']}]},
+ {g:'Divergierend',items:[
+  {id:'rdbu',n:'RdBu',t:'div',d:'ColorBrewer – häufig für Korrelations- und Expressionsmatrizen',c:['#67001F','#B2182B','#D6604D','#F4A582','#FDDBC7','#F7F7F7','#D1E5F0','#92C5DE','#4393C3','#2166AC','#053061']},
+  {id:'coolwarm',n:'coolwarm',t:'div',d:'Moreland 2009 – Standard in vielen Simulationsprogrammen',c:['#3B4CC0','#5977E3','#7B9FF9','#9EBEFF','#C0D4F5','#DDDCDC','#F2CBB7','#F7AC8E','#EE8468','#D65244','#B40426']},
+  {id:'vlag',n:'vlag (seaborn)',t:'div',c:['#5B84BD','#87A0C4','#AFBCD1','#D9DCE5','#FAF5F4','#ECD3D2','#DBABA8','#CC8582','#BB5E5D']},
+  {id:'icefire',n:'icefire (seaborn)',t:'div',c:['#75B8CE','#3885D0','#4A4FA5','#302E4A','#1F1E1E','#4A252E','#932E44','#D34936','#F18F51']},
+  {id:'sunset',n:'Tol sunset',t:'div',c:['#364B9A','#4A7AB6','#6EA6CD','#97C9E1','#C2E4EF','#EAECCB','#FEDA8B','#FDB265','#F67E4B','#DC3C2D','#A50026']},
+  {id:'nightfall',n:'Tol nightfall',t:'div',c:['#125A56','#14848E','#48ABCD','#8FC8EE','#D0DFEB','#ECEAD9','#F5DC8E','#FFB250','#F77D37','#DF3615','#A01813']},
+  {id:'brbg',n:'BrBG',t:'div',c:['#543005','#8C510A','#BF812D','#DFC27D','#F6E8C3','#F5F5F5','#C7EAE5','#80CDC1','#35978F','#01665E','#003C30']},
+  {id:'puor',n:'PuOr',t:'div',c:['#7F3B08','#B35806','#E08214','#FDB863','#FEE0B6','#F7F7F7','#D8DAEB','#B2ABD2','#8073AC','#542788','#2D004B']},
+  {id:'prgn',n:'PRGn',t:'div',c:['#40004B','#762A83','#9970AB','#C2A5CF','#E7D4E8','#F7F7F7','#D9F0D3','#A6DBA0','#5AAE61','#1B7837','#00441B']},
+  {id:'piyg',n:'PiYG',t:'div',c:['#8E0152','#C41A7C','#DE77AE','#F1B5D9','#FDE0EF','#F7F7F6','#E6F5D0','#B7E085','#7FBC41','#4C9121','#276419']},
+  {id:'rdylbu',n:'RdYlBu',t:'div',c:['#A50026','#D62F27','#F46D43','#FDAD60','#FEE090','#FEFFC0','#E0F3F8','#AAD8E9','#74ADD1','#4574B3','#313695']},
+  {id:'spectral',n:'Spectral',t:'div',c:['#9E0142','#D43D4F','#F46D43','#FDAD60','#FEE08B','#FFFFBE','#E6F598','#AADCA4','#66C2A5','#3387BC','#5E4FA2']}]},
+ {g:'Qualitativ – barrierearm',items:[
+  {id:'okabe-ito',n:'Okabe-Ito',t:'qual',d:'Okabe & Ito 2008, empfohlen von Wong 2011 (Nature Methods)',c:['#E69F00','#56B4E9','#009E73','#F0E442','#0072B2','#D55E00','#CC79A7','#000000']},
+  {id:'tol-bright',n:'Tol bright',t:'qual',c:['#4477AA','#EE6677','#228833','#CCBB44','#66CCEE','#AA3377','#BBBBBB']},
+  {id:'tol-vibrant',n:'Tol vibrant',t:'qual',c:['#0077BB','#33BBEE','#009988','#EE7733','#CC3311','#EE3377','#BBBBBB']},
+  {id:'tol-muted',n:'Tol muted',t:'qual',c:['#332288','#88CCEE','#44AA99','#117733','#999933','#DDCC77','#CC6677','#882255','#AA4499']},
+  {id:'tol-hc',n:'Tol high contrast',t:'qual',d:'Drei Farben, auch im Graustufendruck klar getrennt',c:['#004488','#DDAA33','#BB5566','#000000']},
+  {id:'tol-light',n:'Tol light',t:'qual',d:'Für Flächen mit Beschriftung darauf',c:['#77AADD','#EE8866','#EEDD88','#FFAABB','#99DDFF','#44BB99','#BBCC33','#AAAA00','#DDDDDD']},
+  {id:'sns-colorblind',n:'seaborn colorblind',t:'qual',c:['#0173B2','#DE8F05','#029E73','#D55E00','#CC78BC','#CA9161','#FBAFE4','#949494','#ECE133','#56B4E9']}]},
+ {g:'Qualitativ – Software-Standards',items:[
+  {id:'tab10',n:'matplotlib tab10',t:'qual',d:'Standard in matplotlib und D3 (category10) – in sehr vielen Papern zu sehen',c:['#1F77B4','#FF7F0E','#2CA02C','#D62728','#9467BD','#8C564B','#E377C2','#7F7F7F','#BCBD22','#17BECF']},
+  {id:'ggplot2',n:'ggplot2 Standard',t:'qual',d:'Standard-Farbtöne von ggplot2 (hue_pal, 6 Gruppen)',c:['#F8766D','#B79F00','#00BA38','#00BFC4','#619CFF','#F564E3']},
+  {id:'matlab',n:'MATLAB lines',t:'qual',d:'Standard-Farbfolge von MATLAB seit R2014b',c:['#0072BD','#D95319','#EDB120','#7E2F8E','#77AC30','#4DBEEE','#A2142F']},
+  {id:'office',n:'Microsoft Office',t:'qual',d:'Standarddesign von Excel und PowerPoint',c:['#4472C4','#ED7D31','#A5A5A5','#FFC000','#5B9BD5','#70AD47']},
+  {id:'tableau10',n:'Tableau 10',t:'qual',c:['#4E79A7','#F28E2B','#E15759','#76B7B2','#59A14F','#EDC948','#B07AA1','#FF9DA7','#9C755F','#BAB0AC']},
+  {id:'observable10',n:'Observable 10',t:'qual',d:'Standard in Observable Plot seit 2024',c:['#4269D0','#EFB118','#FF725C','#6CC5B0','#3CA951','#FF8AB7','#A463F2','#97BBF5','#9C6B4E','#9498A0']},
+  {id:'sns-deep',n:'seaborn deep',t:'qual',c:['#4C72B0','#DD8452','#55A868','#C44E52','#8172B3','#937860','#DA8BC3','#8C8C8C','#CCB974','#64B5CD']},
+  {id:'set2',n:'Set2 (Brewer)',t:'qual',c:['#66C2A5','#FC8D62','#8DA0CB','#E78AC3','#A6D854','#FFD92F','#E5C494','#B3B3B3']},
+  {id:'dark2',n:'Dark2 (Brewer)',t:'qual',c:['#1B9E77','#D95F02','#7570B3','#E7298A','#66A61E','#E6AB02','#A6761D','#666666']},
+  {id:'paired',n:'Paired (Brewer)',t:'qual',d:'Paare aus hell und dunkel, z. B. Kontrolle/Behandlung',c:['#A6CEE3','#1F78B4','#B2DF8A','#33A02C','#FB9A99','#E31A1C','#FDBF6F','#FF7F00','#CAB2D6','#6A3D9A','#FFFF99','#B15928']}]},
+ {g:'Journal-Stile',items:[
+  {id:'nature-complex-system',n:'Nature Cover',t:'qual',d:'Aus dem Nature-Cover „Complex System“ (AlphaFold 3) extrahiert',c:['#DDE6F3','#7FA4C8','#B59BC8','#D08AB6','#8FB79B','#6A5A8F','#3F345B']},
+  {id:'npg',n:'Nature (NPG)',t:'qual',c:['#E64B35','#4DBBD5','#00A087','#3C5488','#F39B7F','#8491B4','#91D1C2','#DC0000','#7E6148','#B09C85']},
+  {id:'aaas',n:'Science (AAAS)',t:'qual',c:['#3B4992','#EE0000','#008B45','#631879','#008280','#BB0021','#5F559B','#A20056','#808180','#1B1919']},
+  {id:'lancet',n:'Lancet',t:'qual',c:['#00468B','#ED0000','#42B540','#0099B4','#925E9F','#FDAF91','#AD002A','#ADB6B6','#1B1919']},
+  {id:'nejm',n:'NEJM',t:'qual',c:['#BC3C29','#0072B5','#E18727','#20854E','#7876B1','#6F99AD','#FFDC91','#EE4C97']},
+  {id:'jama',n:'JAMA',t:'qual',c:['#374E55','#DF8F44','#00A1D5','#B24745','#79AF97','#6A6599','#80796B']},
+  {id:'bmj',n:'BMJ',t:'qual',d:'Aus dem BMJ Living Style Guide',c:['#2A6EBB','#F0AB00','#C50084','#7D5CC6','#E37222','#69BE28','#00B2A9','#CD202C','#747678']},
+  {id:'jco',n:'JCO',t:'qual',c:['#0073C2','#EFC000','#868686','#CD534C','#7AA6DC','#003C67','#8F7700','#3B3B3B','#A73030','#4A6990']},
+  {id:'frontiers',n:'Frontiers',t:'qual',c:['#D51317','#F39200','#EFD500','#95C11F','#007B3D','#31B7BC','#0094CD','#164194','#6F286A','#706F6F']}]},
+ {g:'Wissenschafts- & Datenjournalismus',items:[
+  {id:'owid',n:'Our World in Data',t:'qual',d:'OWID Distinct (lines), dunklere Varianten für dünne Linien',c:['#4C6A9C','#B13507','#996D39','#2C8465','#6D3E91','#883039','#00295B','#A2559C','#9A5129','#008291']},
+  {id:'economist',n:'The Economist',t:'qual',d:'Klassische Serienfarben (ggthemes)',c:['#6794A7','#014D64','#7AD2F6','#01A2D9','#76C0C1','#00887D']},
+  {id:'economist-red',n:'Economist (rot)',t:'qual',d:'Aus einer Economist-Grafik gemessen: Signalrot, Lachs, Text, Quellengrau, Gitterlinie, Hintergrund',c:['#E3120B','#FBA493','#0D0D0D','#676661','#D9D8D4','#F5F4EF']},
+  {id:'economist-conv',n:'Economist konvergierend',t:'div',d:'Aus „The Economist“ (Blautöne) und „Economist (rot)“: helle Enden, dunkle Mitte – betont Werte nahe der Mitte',c:['#7AD2F6','#01A2D9','#014D64','#3E2D2C','#7C260B','#E3120B','#FBA493']},
+  {id:'fivethirtyeight',n:'FiveThirtyEight',t:'qual',c:['#008FD5','#FC4F30','#E5AE38','#6D904F','#8B8B8B','#810F7C']},
+  {id:'wsj',n:'Wall Street Journal',t:'qual',d:'Nach dem WSJ-DESIGN.md von shadcn.io: WSJ-Rot, Link-Blau, Markt-Grün, Warn-Amber, Tinte, Haarlinie, Papier',c:['#BF242A','#005A9C','#1C8C40','#C47A00','#8B1A1F','#003A6B','#1A1A1A','#767676','#E2E0D9','#FCFBF7']},
+  {id:'nyt',n:'New York Times',t:'qual',d:'Redaktionelle Signalfarben nach dem NYT-DESIGN.md von shadcn.io: Editorial-Blau, Breaking-Rot, Developing-Orange, Positiv-Grün',c:['#326891','#D0021B','#E6540A','#267C30','#2671DC','#A61B1E','#567B95','#121212','#727272','#FEFAD1']},
+  {id:'wired',n:'Wired',t:'qual',d:'Nach dem Wired-DESIGN.md von shadcn.io: fast nur Schwarz-Weiß, einziger Akzent ist das Link-Blau',c:['#057DBC','#000000','#757575','#E0E0E0','#F5F5F5','#FFFFFF']},
+  {id:'pudding',n:'The Pudding',t:'qual',d:'Farbvariablen aus dem offenen svelte-starter von The Pudding (OKLCH, umgerechnet)',c:['#4717F6','#FF533D','#34A29E','#A239CA','#E5E338','#171717','#737373','#D4D4D4']},
+  {id:'uk-gss',n:'UK Analysis Function',t:'qual',d:'Barrierearme Behördenpalette (ONS/GSS), in fester Reihenfolge verwenden',c:['#12436D','#28A197','#801650','#F46A25','#3D3D3D','#A285D1']}]}
+];
+const PRESETS={};LIB.forEach(g=>g.items.forEach(p=>PRESETS[p.id]=p));
+
+/* ---------- Zustand ---------- */
+const S={colors:sample(PRESETS['viridis'].c,7),name:'viridis',kind:'seq',
+  src:{k:'preset',id:'viridis'},libOpen:new Set(),libQ:'',base:null,img:null,sim:'none',dark:false,skipLight:true,tab:'python',marks:[]};
+const $=s=>document.querySelector(s);
+const f=n=>(+n).toFixed(1);
+
+let storageOK=true;
+function loadSaved(){try{return JSON.parse(localStorage.getItem('sci-pal-saved')||'[]')}catch(e){storageOK=false;return[]}}
+function storeSaved(a){try{localStorage.setItem('sci-pal-saved',JSON.stringify(a));return true}catch(e){storageOK=false;return false}}
+
+function toast(msg){const t=$('#toast');t.textContent=msg;t.classList.add('show');clearTimeout(toast.h);toast.h=setTimeout(()=>t.classList.remove('show'),1600)}
+async function copy(txt,msg){
+  try{await navigator.clipboard.writeText(txt)}catch(e){
+    const ta=document.createElement('textarea');ta.value=txt;ta.style.position='fixed';ta.style.opacity='0';document.body.appendChild(ta);ta.select();
+    try{document.execCommand('copy')}catch(_){};ta.remove();
+  }
+  toast(msg||'Kopiert');
+}
+function download(name,content,type){
+  const b=new Blob([content],{type:type||'text/plain'});const a=document.createElement('a');
+  a.href=URL.createObjectURL(b);a.download=name;document.body.appendChild(a);a.click();
+  setTimeout(()=>{URL.revokeObjectURL(a.href);a.remove()},500);
+}
+const slug=()=>(S.name||'palette').toLowerCase().replace(/[^a-z0-9]+/g,'_').replace(/^_|_$/g,'')||'palette';
+
+/* ---------- Farben für Diagramme ---------- */
+function dataColors(){
+  let c=S.colors.slice();
+  if(S.skipLight&&S.kind==='qual'){const k=c.filter(h=>hex2lab(h)[0]<0.9);if(k.length>=2)c=k}
+  return c;
+}
+function cats(m){
+  const c=dataColors();
+  if(S.kind==='qual')return Array.from({length:m},(_,i)=>c[i%c.length]);
+  // sequenziell/divergierend: gleichmäßig über die Skala verteilen, extreme Enden etwas meiden
+  return Array.from({length:m},(_,i)=>interp(S.colors,m===1?.5:.08+.84*i/(m-1)));
+}
+function contCols(){
+  if(S.kind!=='qual')return S.colors;
+  // Qualitative Palette: divergierende Skala aus erster Datenfarbe, hellster Farbe und einer Kontrastfarbe
+  const dc=dataColors(),light=S.colors.reduce((a,b)=>hex2lab(a)[0]>hex2lab(b)[0]?a:b);
+  const mid=hex2lab(light)[0]>.85?light:'#F4F4F4';
+  return[dc[0],mid,dc[Math.min(2,dc.length-1)]];
+}
+const cont=t=>interp(contCols(),t);
+const darkest=()=>S.colors.reduce((a,b)=>hex2lab(a)[0]<hex2lab(b)[0]?a:b);
+function theme(){return S.dark?{bg:'#0E1116',fg:'#E2E6EC',mu:'#8C96A3',grid:'#262C34'}:{bg:'#FFFFFF',fg:'#2A2F37',mu:'#7A828E',grid:'#E9ECF0'}}
+
+/* ---------- Diagramm-Helfer ---------- */
+function rng(seed){return function(){seed|=0;seed=seed+0x6D2B79F5|0;let t=Math.imul(seed^seed>>>15,1|seed);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296}}
+function gauss(r){let u=0,v=0;while(!u)u=r();while(!v)v=r();return Math.sqrt(-2*Math.log(u))*Math.cos(2*Math.PI*v)}
+const lin=(d0,d1,r0,r1)=>v=>r0+(v-d0)/(d1-d0)*(r1-r0);
+const W=360,H=260;
+function wrap(th,body){return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${W} ${H}" font-family="IBM Plex Sans, Helvetica, Arial, sans-serif" font-size="9.5"><rect width="${W}" height="${H}" fill="${th.bg}"/>${body}</svg>`}
+function axisY(x,ya,yb,ticks,sc,th,fmt=String){
+  let s=`<line x1="${x}" y1="${ya}" x2="${x}" y2="${yb}" stroke="${th.fg}" stroke-width=".8"/>`;
+  for(const t of ticks){const y=f(sc(t));s+=`<line x1="${x-3}" y1="${y}" x2="${x}" y2="${y}" stroke="${th.fg}" stroke-width=".8"/><text x="${x-5}" y="${y}" dy=".33em" text-anchor="end" fill="${th.fg}">${fmt(t)}</text>`}
+  return s;
+}
+function axisX(y,xa,xb,ticks,sc,th,fmt=String){
+  let s=`<line x1="${xa}" y1="${y}" x2="${xb}" y2="${y}" stroke="${th.fg}" stroke-width=".8"/>`;
+  for(const t of ticks){const x=f(sc(t));s+=`<line x1="${x}" y1="${y}" x2="${x}" y2="${y+3}" stroke="${th.fg}" stroke-width=".8"/><text x="${x}" y="${y+13}" text-anchor="middle" fill="${th.fg}">${fmt(t)}</text>`}
+  return s;
+}
+const titleX=(x,y,t,th)=>`<text x="${x}" y="${y}" text-anchor="middle" fill="${th.fg}" font-size="10">${t}</text>`;
+const titleY=(x,y,t,th)=>`<text transform="translate(${x} ${y}) rotate(-90)" text-anchor="middle" fill="${th.fg}" font-size="10">${t}</text>`;
+function legend(x,y,items,th,type){
+  return items.map(([c,l],i)=>{const yy=y+i*14;
+    const mark=type==='line'?`<line x1="${x}" y1="${yy}" x2="${x+14}" y2="${yy}" stroke="${c}" stroke-width="1.8"/><circle cx="${x+7}" cy="${yy}" r="2.4" fill="${c}"/>`
+      :type==='dash'?`<line x1="${x}" y1="${yy}" x2="${x+14}" y2="${yy}" stroke="${c}" stroke-width="1.5" stroke-dasharray="3 2"/>`
+      :type==='rect'?`<rect x="${x}" y="${yy-4.5}" width="12" height="9" fill="${c}"/>`
+      :`<circle cx="${x+5}" cy="${yy}" r="3.6" fill="${c}"/>`;
+    return mark+`<text x="${x+19}" y="${yy}" dy=".33em" fill="${th.fg}">${l}</text>`}).join('');
+}
+function arcSeg(cx,cy,r0,r1,a0,a1){
+  const p=(r,a)=>[cx+r*Math.sin(a),cy-r*Math.cos(a)];
+  const[x0,y0]=p(r1,a0),[x1,y1]=p(r1,a1),[x2,y2]=p(r0,a1),[x3,y3]=p(r0,a0),lg=a1-a0>Math.PI?1:0;
+  return `M${f(x0)} ${f(y0)}A${r1} ${r1} 0 ${lg} 1 ${f(x1)} ${f(y1)}L${f(x2)} ${f(y2)}A${r0} ${r0} 0 ${lg} 0 ${f(x3)} ${f(y3)}Z`;
+}
+
+/* ---------- Diagramme ---------- */
+const CHARTS=[
+ {t:'Heatmap mit hierarchischem Clustering',fn(th){
+   const R=rng(3),rows=8,cols=10,x0=74,y0=18,cw=21,ch=21;let s='';
+   for(let r=0;r<rows;r++)for(let c=0;c<cols;c++){
+     let v=(r<4?1:-1)*(c<5?-1:1)*1.1+(r%2?.3:-.2)*(c%3-1)+gauss(R)*.45;v=Math.max(-2,Math.min(2,v));
+     s+=`<rect x="${x0+c*cw}" y="${y0+r*ch}" width="${cw}" height="${ch}" fill="${cont((v+2)/4)}" stroke="${th.bg}" stroke-width=".6"/>`;
+   }
+   const yc=r=>y0+r*ch+ch/2,ln=th.fg;
+   const br=(ya,yb,x,xa,xb)=>`<path d="M${xa} ${ya}H${x}V${yb}H${xb}" fill="none" stroke="${ln}" stroke-width=".9"/>`;
+   for(let i=0;i<4;i++)s+=br(yc(2*i),yc(2*i+1),58,70,70);
+   s+=br((yc(0)+yc(1))/2,(yc(2)+yc(3))/2,42,58,58)+br((yc(4)+yc(5))/2,(yc(6)+yc(7))/2,42,58,58);
+   s+=br((yc(0)+yc(3))/2,(yc(4)+yc(7))/2,20,42,42);
+   for(let r=0;r<rows;r++)s+=`<text x="${x0+cols*cw+6}" y="${yc(r)}" dy=".33em" fill="${th.fg}">Gen ${r+1}</text>`;
+   const by=206,bx=x0,bw=cols*cw;
+   for(let i=0;i<60;i++)s+=`<rect x="${f(bx+i*bw/60)}" y="${by}" width="${f(bw/60+.4)}" height="9" fill="${cont(i/59)}"/>`;
+   s+=axisX(by+9,bx,bx+bw,[-2,-1,0,1,2],lin(-2,2,bx,bx+bw),th,v=>v<0?'−'+(-v):v);
+   s+=titleX(bx+bw/2,by+36,'z-Score',th);
+   return wrap(th,s)}},
+ {t:'Dosis-Wirkungs-Kurven',fn(th){
+   const R=rng(7),X=lin(-3,2,48,248),Y=lin(0,100,214,20),ec=[-2,-1.4,-.85,-.25,.35],cs=cats(5);
+   let s=`<g stroke="${th.grid}" stroke-width=".6">${[25,50,75].map(v=>`<line x1="48" x2="248" y1="${f(Y(v))}" y2="${f(Y(v))}"/>`).join('')}</g>`;
+   s+=axisY(48,20,214,[0,25,50,75,100],Y,th)+axisX(214,48,248,[-3,-2,-1,0,1,2],X,th,v=>`10<tspan dy="-4" font-size="7">${v<0?'−'+(-v):v}</tspan>`);
+   ec.forEach((e,k)=>{const c=cs[k],F=x=>100/(1+Math.pow(10,(e-x)*1.4));
+     let d='';for(let i=0;i<=80;i++){const x=-3+5*i/80;d+=(i?'L':'M')+f(X(x))+' '+f(Y(F(x)))}
+     s+=`<path d="${d}" fill="none" stroke="${c}" stroke-width="1.6"/>`;
+     for(let x=-3;x<=2.01;x+=.5){const y=Math.max(0,Math.min(100,F(x)+gauss(R)*2)),er=2.5+R()*3.5;
+       s+=`<line x1="${f(X(x))}" x2="${f(X(x))}" y1="${f(Y(y-er))}" y2="${f(Y(y+er))}" stroke="${c}" stroke-width=".8"/><circle cx="${f(X(x))}" cy="${f(Y(y))}" r="2.3" fill="${c}"/>`}
+   });
+   s+=legend(262,40,cs.map((c,i)=>[c,'Substanz '+'ABCDE'[i]]),th,'line');
+   s+=titleX(148,246,'Konzentration (µM)',th)+titleY(14,117,'Antwort (%)',th);
+   return wrap(th,s)}},
+ {t:'Zirkuläre Merkmalskarte',fn(th){
+   const R=rng(11),cx=180,cy=132,n=150,gap=.07,cs=cats(6);let s='';
+   let cur=0,run=0,nz=0;
+   for(let i=0;i<n;i++){
+     const a0=gap+(2*Math.PI-2*gap)*i/n,a1=gap+(2*Math.PI-2*gap)*(i+1)/n;
+     if(run--<=0){cur=Math.floor(R()*cs.length);run=1+Math.floor(R()*5)}
+     nz=Math.max(0,Math.min(1,nz*.8+.2*(.5+Math.sin(i/9)*.4+gauss(R)*.25)));
+     s+=`<path d="${arcSeg(cx,cy,96,114,a0,a1+.004)}" fill="${cs[cur]}"/>`;
+     s+=`<path d="${arcSeg(cx,cy,72,90,a0,a1+.004)}" fill="${cont(nz)}"/>`;
+   }
+   for(let i=0;i<n;i+=2){const a=gap+(2*Math.PI-2*gap)*i/n,h=4+Math.min(18,Math.abs(gauss(R))*12);
+     s+=`<line x1="${f(cx+60*Math.sin(a))}" y1="${f(cy-60*Math.cos(a))}" x2="${f(cx+(60-h)*Math.sin(a))}" y2="${f(cy-(60-h)*Math.cos(a))}" stroke="${darkest()}" stroke-width="1.1" opacity=".75"/>`}
+   s+=`<circle cx="${cx}" cy="${cy}" r="60" fill="none" stroke="${th.grid}"/>`;
+   s+=`<text x="${cx}" y="${cy-4}" text-anchor="middle" fill="${th.fg}" font-size="11">Genom</text><text x="${cx}" y="${cy+10}" text-anchor="middle" fill="${th.mu}">8,4 Mb</text>`;
+   [['0 Mb',0],['2 Mb',Math.PI/2],['4 Mb',Math.PI],['6 Mb',1.5*Math.PI]].forEach(([l,a])=>{s+=`<text x="${f(cx+126*Math.sin(a))}" y="${f(cy-126*Math.cos(a))}" dy=".33em" text-anchor="middle" fill="${th.mu}">${l}</text>`});
+   return wrap(th,s)}},
+ {t:'UMAP-Clustering',fn(th){
+   const R=rng(5),X=lin(-10,10,44,250),Y=lin(-10,10,214,20),cs=cats(6);
+   const C=[[-6,4,1.6,1.1],[-.5,7,1.1,1],[5,4,1.8,1.2],[-2,-3,2.2,1.1],[6,-4,1,1.5],[1,1,1,.9]];let s='';
+   s+=axisY(44,20,214,[-10,-5,0,5,10],Y,th,v=>v<0?'−'+(-v):v)+axisX(214,44,250,[-10,-5,0,5,10],X,th,v=>v<0?'−'+(-v):v);
+   C.forEach(([mx,my,sx,sy],k)=>{for(let i=0;i<70;i++){const x=mx+gauss(R)*sx,y=my+gauss(R)*sy;
+     s+=`<circle cx="${f(X(x))}" cy="${f(Y(y))}" r="2.1" fill="${cs[k]}" fill-opacity=".85"/>`}});
+   s+=legend(264,50,cs.map((c,i)=>[c,'Cluster '+(i+1)]),th,'dot');
+   s+=titleX(147,246,'UMAP 1',th)+titleY(14,117,'UMAP 2',th);
+   return wrap(th,s)}},
+ {t:'Expressionsverteilung (Violin)',fn(th){
+   const R=rng(9),Y=lin(-2,3,214,20),cs=cats(6),groups=[];let mx=0;
+   for(let g=0;g<6;g++){const m=.2+.25*Math.sin(g*1.3),sd=.55+.1*(g%3),xs=Array.from({length:150},()=>m+gauss(R)*sd);
+     const ys=[],ds=[];for(let y=-2;y<=3.001;y+=.08){let d=0;for(const v of xs)d+=Math.exp(-.5*((y-v)/.22)**2);ys.push(y);ds.push(d);mx=Math.max(mx,d)}
+     xs.sort((a,b)=>a-b);groups.push({ys,ds,q:[xs[37],xs[75],xs[112]]})}
+   let s=`<g stroke="${th.grid}" stroke-width=".6">${[-1,0,1,2].map(v=>`<line x1="44" x2="340" y1="${f(Y(v))}" y2="${f(Y(v))}"/>`).join('')}</g>`;
+   s+=axisY(44,20,214,[-2,-1,0,1,2,3],Y,th,v=>v<0?'−'+(-v):v);
+   groups.forEach((G,g)=>{const cx=70+g*50,w=21;let r='',l='';
+     G.ys.forEach((y,i)=>{if(G.ds[i]/mx<.01)return;const dx=w*G.ds[i]/mx;r+=(r?'L':'M')+f(cx+dx)+' '+f(Y(y));l=`L${f(cx-dx)} ${f(Y(y))}`+l});
+     s+=`<path d="${r+l}Z" fill="${cs[g]}" fill-opacity=".88" stroke="${cs[g]}" stroke-width=".8"/>`;
+     s+=`<rect x="${cx-4}" y="${f(Y(G.q[2]))}" width="8" height="${f(Y(G.q[0])-Y(G.q[2]))}" fill="#fff" stroke="${th.fg}" stroke-width=".8"/><line x1="${cx-4}" x2="${cx+4}" y1="${f(Y(G.q[1]))}" y2="${f(Y(G.q[1]))}" stroke="${th.fg}" stroke-width="1.3"/>`;
+     s+=`<text x="${cx}" y="229" text-anchor="middle" fill="${th.fg}">Gruppe ${g+1}</text>`});
+   s+=titleY(14,117,'Expressionsniveau',th);
+   return wrap(th,s)}},
+ {t:'Spektrum mit Peak-Fit',fn(th){
+   const R=rng(13),X=lin(400,800,46,238),Y=lin(0,2,214,20),P=[[440,.75,14],[520,1.55,24],[600,1.15,30],[680,.38,24]],cs=cats(4),dk=darkest();
+   const g=(x,[m,a,w])=>a*Math.exp(-.5*((x-m)/w)**2);
+   let s=axisY(46,20,214,[0,.5,1,1.5,2],Y,th,v=>v.toFixed(1))+axisX(214,46,238,[400,500,600,700,800],X,th);
+   P.forEach((p,k)=>{let d='';for(let x=400;x<=800;x+=4)d+=(x===400?'M':'L')+f(X(x))+' '+f(Y(g(x,p)));
+     s+=`<path d="${d}L${f(X(800))} ${f(Y(0))}L${f(X(400))} ${f(Y(0))}Z" fill="${cs[k]}" fill-opacity=".14"/><path d="${d}" fill="none" stroke="${cs[k]}" stroke-width="1.2" stroke-dasharray="3 2"/>`});
+   let o='',fit='';for(let x=400;x<=800;x+=3){const y=P.reduce((a,p)=>a+g(x,p),0);fit+=(x===400?'M':'L')+f(X(x))+' '+f(Y(y));o+=(x===400?'M':'L')+f(X(x))+' '+f(Y(Math.max(0,y+gauss(R)*.035)))}
+   s+=`<path d="${o}" fill="none" stroke="${dk}" stroke-width="1.4"/><path d="${fit}" fill="none" stroke="${th.mu}" stroke-width="1" stroke-dasharray="5 3"/>`;
+   s+=legend(250,40,[[dk,'Gemessen']],th,'line').replace(/<circle[^>]*>/,'')+legend(250,54,[[th.mu,'Fit'],...cs.map((c,i)=>[c,'Peak '+(i+1)])],th,'dash');
+   s+=titleX(142,246,'Wellenlänge (nm)',th)+titleY(14,117,'Intensität (a. u.)',th);
+   return wrap(th,s)}},
+ {t:'Polare Verteilung',fn(th){
+   const R=rng(17),cx=170,cy=132,rm=100,n=16,cs=cats(Math.min(8,dataColors().length));let s='';
+   [10,20,30].forEach(v=>s+=`<circle cx="${cx}" cy="${cy}" r="${rm*v/30}" fill="none" stroke="${th.grid}"/>`);
+   for(let i=0;i<8;i++){const a=i*Math.PI/4;s+=`<line x1="${cx}" y1="${cy}" x2="${f(cx+rm*Math.sin(a))}" y2="${f(cy-rm*Math.cos(a))}" stroke="${th.grid}"/>`}
+   for(let i=0;i<n;i++){const v=8+R()*20+(i>4&&i<9?6:0),a0=i*2*Math.PI/n+.02,a1=(i+1)*2*Math.PI/n-.02;
+     s+=`<path d="${arcSeg(cx,cy,0.01,rm*v/30,a0,a1)}" fill="${cs[i%cs.length]}" fill-opacity=".9" stroke="${th.bg}" stroke-width=".6"/>`}
+   ['0°','45°','90°','135°','180°','225°','270°','315°'].forEach((l,i)=>{const a=i*Math.PI/4;s+=`<text x="${f(cx+(rm+13)*Math.sin(a))}" y="${f(cy-(rm+13)*Math.cos(a))}" dy=".33em" text-anchor="middle" fill="${th.fg}">${l}</text>`});
+   [10,20,30].forEach(v=>s+=`<text x="${cx+3}" y="${f(cy-rm*v/30-2)}" fill="${th.mu}" font-size="8">${v}</text>`);
+   return wrap(th,s)}},
+ {t:'Gestapelte Anteile mit Trend',fn(th){
+   const R=rng(21),years=[2018,2019,2020,2021,2022,2023],cs=cats(5),tot=[30,42,40,58,70,82],dk=darkest();
+   const Y=lin(0,100,200,20),bw=24,x0=58,step=34;let s='';
+   s+=axisY(44,20,200,[0,25,50,75,100],Y,th);
+   years.forEach((yr,i)=>{let w=cs.map((_,k)=>.6+R()+(k===0?.4*i/5:0)),sum=w.reduce((a,b)=>a+b);let acc=0;const x=x0+i*step;
+     w.forEach((v,k)=>{const p=100*v/sum;s+=`<rect x="${x}" y="${f(Y(acc+p))}" width="${bw}" height="${f(Y(acc)-Y(acc+p))}" fill="${cs[k]}" stroke="${th.bg}" stroke-width=".5"/>`;acc+=p});
+     s+=`<text x="${x+bw/2}" y="213" text-anchor="middle" fill="${th.fg}">${yr}</text>`});
+   const Y2=lin(0,100,200,20);let d='';tot.forEach((t,i)=>d+=(i?'L':'M')+f(x0+i*step+bw/2)+' '+f(Y2(t)));
+   s+=`<path d="${d}" fill="none" stroke="${dk}" stroke-width="1.6"/>`+tot.map((t,i)=>`<circle cx="${f(x0+i*step+bw/2)}" cy="${f(Y2(t))}" r="3" fill="${th.bg}" stroke="${dk}" stroke-width="1.4"/>`).join('');
+   s+=axisY(258,20,200,[0,25,50,75,100],Y2,th).replace(/x1="255"/g,'x1="261"').replace(/text-anchor="end"/g,'text-anchor="start"').replace(/x="253"/g,'x="264"');
+   s+=legend(292,40,cs.map((c,i)=>[c,'Kat. '+(i+1)]),th,'rect')+legend(292,120,[[dk,'Gesamt']],th,'line');
+   s+=titleY(14,110,'Anteil (%)',th)+titleY(286,110,'Gesamt (Einheiten)',th).replace('rotate(-90)','rotate(90)');
+   return wrap(th,s)}},
+ {t:'Gruppierte Balken mit Fehlerbalken',fn(th){
+   const R=rng(25),grp=['Kontrolle','Dosis 1','Dosis 2','Dosis 3'],cs=cats(3),Y=lin(0,12,200,20),bw=16;let s='';
+   s+=`<g stroke="${th.grid}" stroke-width=".6">${[3,6,9,12].map(v=>`<line x1="44" x2="300" y1="${f(Y(v))}" y2="${f(Y(v))}"/>`).join('')}</g>`;
+   s+=axisY(44,20,200,[0,3,6,9,12],Y,th);
+   grp.forEach((g,i)=>{const gx=62+i*60;cs.forEach((c,k)=>{const v=2.5+i*1.6*(k+1)/2+R()*1.2,e=.4+R()*.7,x=gx+k*(bw+2);
+     s+=`<rect x="${x}" y="${f(Y(v))}" width="${bw}" height="${f(Y(0)-Y(v))}" fill="${c}"/><line x1="${x+bw/2}" x2="${x+bw/2}" y1="${f(Y(v-e))}" y2="${f(Y(v+e))}" stroke="${th.fg}" stroke-width=".9"/><line x1="${x+bw/2-3}" x2="${x+bw/2+3}" y1="${f(Y(v+e))}" y2="${f(Y(v+e))}" stroke="${th.fg}" stroke-width=".9"/>`;
+     if(i>1&&k===2)s+=`<text x="${x+bw/2}" y="${f(Y(v+e)-4)}" text-anchor="middle" fill="${th.fg}" font-size="11">${i===3?'***':'*'}</text>`});
+     s+=`<text x="${gx+26}" y="213" text-anchor="middle" fill="${th.fg}">${g}</text>`});
+   s+=`<line x1="44" x2="300" y1="200" y2="200" stroke="${th.fg}" stroke-width=".8"/>`;
+   s+=legend(304,40,cs.map((c,i)=>[c,['24 h','48 h','72 h'][i]]),th,'rect');
+   s+=titleY(14,110,'Relative Aktivität',th);
+   return wrap(th,s)}}
+];
+
+/* ---------- Rendering ---------- */
+function renderStrip(){
+  const el=$('#strip');el.innerHTML='';
+  S.colors.forEach((h,i)=>{
+    const tc=textOn(h),d=document.createElement('div');
+    d.className='sw';d.style.background=h;d.style.color=tc;d.draggable=!matchMedia('(pointer:coarse)').matches;d.dataset.i=i;
+    d.innerHTML=`<label class="fill" title="Farbe ändern"><input type="color" value="${h.toLowerCase()}" aria-label="Farbe ${i+1} ändern"></label>
+      <button class="copy" title="Hex-Code kopieren">Kopieren</button>
+      <div class="tools"><button data-a="l" title="Nach links" aria-label="Nach links">‹</button><button data-a="r" title="Nach rechts" aria-label="Nach rechts">›</button><button data-a="x" title="Entfernen" aria-label="Entfernen">×</button></div>
+      <span class="idx">${i+1}</span>
+      <input class="hex" value="${h}" maxlength="7" spellcheck="false" aria-label="Hex-Code Farbe ${i+1}" style="color:${tc}">`;
+    const ci=d.querySelector('input[type=color]');
+    ci.addEventListener('input',e=>{const v=e.target.value.toUpperCase();S.colors[i]=v;updateSwatch(i,v,true);markCustom(false);schedule()});
+    ci.addEventListener('change',()=>{markCustom();renderAll()});
+    d.querySelector('.hex').addEventListener('change',e=>{let v=e.target.value.trim();if(!v.startsWith('#'))v='#'+v;
+      if(/^#([0-9a-f]{3}|[0-9a-f]{6})$/i.test(v)){S.colors[i]=rgb2hex(hex2rgb(v));markCustom();renderAll()}else{e.target.value=S.colors[i];toast('Ungültiger Hex-Code')}});
+    d.querySelector('.copy').addEventListener('click',()=>copy(S.colors[i],S.colors[i]+' kopiert'));
+    d.querySelector('.tools').addEventListener('click',e=>{const a=e.target.dataset.a;if(!a)return;
+      syncMarks();
+      if(a==='x'){if(S.colors.length<=2){toast('Mindestens zwei Farben');return}S.colors.splice(i,1);S.marks.splice(i,1)}
+      else{const j=a==='l'?i-1:i+1;if(j<0||j>=S.colors.length)return;[S.colors[i],S.colors[j]]=[S.colors[j],S.colors[i]];[S.marks[i],S.marks[j]]=[S.marks[j],S.marks[i]]}
+      markCustom();renderAll()});
+    d.addEventListener('dragstart',e=>{e.dataTransfer.setData('text/plain',String(i));e.dataTransfer.effectAllowed='move'});
+    d.addEventListener('dragover',e=>{e.preventDefault();d.classList.add('dragover')});
+    d.addEventListener('dragleave',()=>d.classList.remove('dragover'));
+    d.addEventListener('drop',e=>{e.preventDefault();d.classList.remove('dragover');const from=+e.dataTransfer.getData('text/plain');if(isNaN(from)||from===i)return;
+      syncMarks();const[c]=S.colors.splice(from,1);S.colors.splice(i,0,c);const[m]=S.marks.splice(from,1);S.marks.splice(i,0,m);markCustom();renderAll()});
+    d.addEventListener('mouseenter',()=>{const m=document.querySelector(`.mk[data-i="${i}"]`);if(m)m.classList.add('hl')});
+    d.addEventListener('mouseleave',()=>{const m=document.querySelector(`.mk[data-i="${i}"]`);if(m)m.classList.remove('hl')});
+    el.appendChild(d);
+  });
+  const add=document.createElement('button');add.className='add';add.title='Farbe hinzufügen';add.setAttribute('aria-label','Farbe hinzufügen');add.textContent='+';
+  add.addEventListener('click',()=>{if(S.colors.length>=16){toast('Maximal 16 Farben');return}
+    const a=S.colors[S.colors.length-1],b=S.colors[0];S.colors.push(interp([a,b],.5));markCustom();renderAll()});
+  el.appendChild(add);
+}
+function renderFigs(){
+  const th=theme(),el=$('#figs');
+  if(!el.children.length){
+    CHARTS.forEach((c,i)=>{const p=document.createElement('div');p.className='panel';
+      p.innerHTML=`<header><span class="letter">${'ABCDEFGHI'[i]}</span><h3>${c.t}</h3><button data-dl="${i}">SVG</button></header><div class="fig"></div>`;
+      p.querySelector('button').addEventListener('click',()=>download(`${slug()}_${'ABCDEFGHI'[i]}.svg`,CHARTS[i].fn(theme()),'image/svg+xml'));
+      el.appendChild(p)});
+  }
+  [...el.querySelectorAll('.fig')].forEach((d,i)=>d.innerHTML=CHARTS[i].fn(th));
+  el.className='figs'+(S.sim!=='none'?' sim-'+S.sim:'');
+}
+function minDE(cols){let m=Infinity,pair=null;const L=cols.map(hex2lab);
+  for(let i=0;i<L.length;i++)for(let j=i+1;j<L.length;j++){const d=dE(L[i],L[j]);if(d<m){m=d;pair=[i,j]}}return{m,pair}}
+function renderCheck(){
+  const dc=S.kind==='qual'?dataColors():cats(Math.min(7,S.colors.length));
+  const rows=[['none','Normalsichtig'],['deut','Deuteranopie'],['prot','Protanopie'],['trit','Tritanopie'],['gray','Graustufen']];
+  $('#simRows').innerHTML=rows.map(([k,l])=>{const sc=dc.map(h=>simulate(h,k)),{m}=minDE(sc),cls=m<5?'bad':m>=10?'good':'';
+    return `<div class="simrow"><span>${l}</span><div class="s">${sc.map(h=>`<span style="background:${h}" title="${h}"></span>`).join('')}</div><span class="v ${cls}">ΔE ${isFinite(m)?m.toFixed(1):'–'}</span></div>`}).join('');
+  // Helligkeitsprofil
+  const Ls=S.colors.map(h=>hex2lab(h)[0]),w=100/S.colors.length;
+  $('#lprof').innerHTML=`<h3 style="margin-bottom:6px">Helligkeitsverlauf der Palette</h3><svg viewBox="0 0 100 30" preserveAspectRatio="none" style="width:100%;height:60px;display:block">${Ls.map((L,i)=>`<rect x="${i*w+.4}" y="${30-28*L}" width="${w-.8}" height="${28*L}" fill="${S.colors[i]}"/>`).join('')}</svg>
+    <p class="note">${S.kind==='seq'?(isMono(Ls)?'Die Helligkeit verläuft gleichmäßig in eine Richtung – gut für sequenzielle Skalen.':'Die Helligkeit springt. Für sequenzielle Daten „Helligkeit angleichen“ oder „Nach Helligkeit“ verwenden.'):'Unterschiedliche Helligkeiten helfen, Kategorien auch im Graustufendruck zu trennen.'}</p>`;
+  const R=roles(S.colors);
+  $('#roles').innerHTML=R?R.map(([l,o])=>`<button class="role" data-h="${o.h}"><i style="background:${o.h}"></i><span>${l}<br><b>${o.h}</b></span></button>`).join(''):'<p class="note">Mindestens drei Farben nötig.</p>';
+}
+function isMono(L){let up=true,dn=true;for(let i=1;i<L.length;i++){if(L[i]<L[i-1]-.01)up=false;if(L[i]>L[i-1]+.01)dn=false}return up||dn}
+function roles(cols){
+  if(cols.length<3)return null;
+  const it=cols.map(h=>{const[L,a,b]=hex2lab(h);return{h,L,C:Math.hypot(a,b)}});
+  const byL=[...it].sort((x,y)=>y.L-x.L),bg=byL[0],tx=byL[byL.length-1];
+  let rest=it.filter(i=>i!==bg&&i!==tx);const hi=[...rest].sort((x,y)=>y.C-x.C)[0];rest=rest.filter(i=>i!==hi);
+  const p=rest[0]||hi,s=rest[1]||p,u=rest[2]||s;
+  return[['Hintergrund',bg],['Primärdaten',p],['Sekundärdaten',s],['Hervorhebung',hi],['Unterstützung',u],['Text & Achsen',tx]];
+}
+
+/* ---------- Export ---------- */
+const TABS=[
+ ['python','Python',()=>{const n=slug(),c=S.colors.map(h=>`"${h}"`).join(', ');return `import matplotlib.pyplot as plt
+from matplotlib.colors import ListedColormap, LinearSegmentedColormap
+
+${n} = [${c}]
+
+# Standard-Farbfolge für Linien, Punkte, Balken
+plt.rcParams["axes.prop_cycle"] = plt.cycler(color=${n})
+
+# Diskrete und kontinuierliche Colormap (z. B. für imshow, heatmaps)
+cmap_${n}_discrete = ListedColormap(${n}, name="${n}_discrete")
+cmap_${n} = LinearSegmentedColormap.from_list("${n}", ${n}, N=256)
+# plt.imshow(data, cmap=cmap_${n})
+
+# seaborn:  sns.set_palette(${n})
+# plotly:   px.scatter(df, ..., color_discrete_sequence=${n})
+#           px.imshow(data, color_continuous_scale=${n})`}],
+ ['r','R / ggplot2',()=>{const n=slug(),c=S.colors.map(h=>`"${h}"`).join(', ');return `${n} <- c(${c})
+
+# Diskret (Kategorien)
+ggplot(df, aes(x, y, colour = gruppe)) + geom_point() +
+  scale_colour_manual(values = ${n})
+# Füllfarben: scale_fill_manual(values = ${n})
+
+# Kontinuierlich
+# scale_fill_gradientn(colours = ${n})
+# scale_colour_gradientn(colours = ${n})
+
+# Base R
+palette(${n})
+# image(m, col = colorRampPalette(${n})(256))`}],
+ ['matlab','MATLAB',()=>{const n=slug();return `% Palette: ${n}
+${n} = [
+${S.colors.map(h=>'    '+hex2rgb(h).map(v=>String(v).padStart(3)).join(' ')+'   % '+h).join('\n')}
+] / 255;
+
+colororder(${n});   % Farbfolge für plot, bar, scatter (ab R2019b)
+
+% Kontinuierliche Colormap mit 256 Stufen
+cmap = interp1(linspace(0,1,size(${n},1)), ${n}, linspace(0,1,256));
+colormap(cmap);`}],
+ ['hex','Hex-Liste',()=>S.colors.join('\n')+'\n\n'+S.colors.join(', ')],
+ ['rgb','RGB / Office',()=>{let s='Hex       R    G    B     R(0-1)  G(0-1)  B(0-1)\n';
+   S.colors.forEach(h=>{const c=hex2rgb(h);s+=h+'  '+c.map(v=>String(v).padStart(3)).join('  ')+'    '+c.map(v=>(v/255).toFixed(3)).join('   ')+'\n'});
+   return s+'\nFür Excel, PowerPoint, GraphPad Prism, Origin: Werte unter „Weitere Farben > Benutzerdefiniert“ eintragen.'}],
+ ['latex','LaTeX',()=>{const n=slug().replace(/_/g,'');return `% \\usepackage{xcolor}\n`+S.colors.map((h,i)=>`\\definecolor{${n}${i+1}}{HTML}{${h.slice(1)}}`).join('\n')+
+   `\n\n% pgfplots-Zyklusliste\n\\pgfplotscreateplotcyclelist{${n}}{\n`+S.colors.map((h,i)=>`  {${n}${i+1}, mark=*}`).join(',\n')+`\n}`}],
+ ['css','CSS',()=>{const R=roles(S.colors);return ':root {\n'+S.colors.map((h,i)=>`  --color-${i+1}: ${h};`).join('\n')+
+   (R?'\n\n  /* Rollen */\n'+R.map(([l,o])=>`  --${{'Hintergrund':'bg','Primärdaten':'primary','Sekundärdaten':'secondary','Hervorhebung':'highlight','Unterstützung':'support','Text & Achsen':'text'}[l]}: ${o.h};`).join('\n'):'')+'\n}'}],
+ ['json','JSON',()=>JSON.stringify({name:S.name,type:S.kind,colors:S.colors,rgb:S.colors.map(hex2rgb)},null,2)]
+];
+const EXT={python:'py',r:'R',matlab:'m',hex:'txt',rgb:'txt',latex:'tex',css:'css',json:'json'};
+function renderTabs(){
+  $('#tabs').innerHTML=TABS.map(([k,l])=>`<button role="tab" aria-selected="${k===S.tab}" data-k="${k}">${l}</button>`).join('');
+}
+function renderCode(){$('#code').textContent=TABS.find(t=>t[0]===S.tab)[2]()}
+
+function renderLib(){
+  const saved=loadSaved(),q=S.libQ.trim().toLowerCase();
+  const groups=saved.length?[{g:'Gespeichert',saved:true,items:saved}].concat(LIB):LIB;
+  const html=groups.map(G=>{
+    const items=q?G.items.filter(p=>(p.n+' '+(p.d||'')+' '+G.g).toLowerCase().includes(q)):G.items;
+    if(!items.length)return'';
+    const open=q||S.libOpen.has(G.g);
+    return `<details data-g="${G.g}"${open?' open':''}><summary>${G.g} <span>${items.length}</span></summary><div class="chips">${items.map(p=>{
+      const bg=p.t==='qual'?`linear-gradient(90deg,${p.c.map((c,i)=>`${c} ${i/p.c.length*100}% ${(i+1)/p.c.length*100}%`).join(',')})`:`linear-gradient(90deg,${p.c.join(',')})`;
+      const on=S.src.k==='preset'&&S.src.id===p.id&&!G.saved;
+      const tip=(p.d?p.d+' · ':'')+{seq:'sequenziell',div:'divergierend',qual:'qualitativ'}[p.t]+', '+p.c.length+' Farben';
+      return `<button class="chip${on?' on':''}" data-id="${p.id}"${G.saved?' data-saved="1"':''} title="${tip}"><i style="background:${bg}"></i>${p.n}${G.saved?'<span class="del" data-del="'+p.id+'" title="Löschen">×</span>':''}</button>`}).join('')}</div></details>`}).join('');
+  $('#lib').innerHTML=html||'<p class="note">Keine Palette gefunden.</p>';
+}
+let raf=0;function schedule(){cancelAnimationFrame(raf);raf=requestAnimationFrame(()=>{renderFigs();renderCheck();renderCode()})}
+function syncMarks(){while(S.marks.length<S.colors.length)S.marks.push(null);S.marks.length=S.colors.length}
+function updateSwatch(i,h,fromPicker){
+  const d=document.querySelector(`.sw[data-i="${i}"]`),t=textOn(h);
+  if(d){d.style.background=h;d.style.color=t;const hx=d.querySelector('.hex');hx.value=h;hx.style.color=t;if(!fromPicker)d.querySelector('input[type=color]').value=h.toLowerCase()}
+  const m=document.querySelector(`.mk[data-i="${i}"]`);if(m){m.style.background=h;m.style.color=t}
+}
+function renderMarks(){
+  const box=$('#marks');if(!S.img){box.innerHTML='';return}
+  syncMarks();
+  box.innerHTML=S.marks.map((m,i)=>m?`<button class="mk" data-i="${i}" style="left:${m.x*100}%;top:${m.y*100}%;background:${S.colors[i]};color:${textOn(S.colors[i])}" aria-label="Markierung für Farbe ${i+1}, mit Pfeiltasten verschieben">${i+1}</button>`:'').join('');
+}
+function renderAll(){syncMarks();renderStrip();renderMarks();renderFigs();renderCheck();renderCode();renderLib();
+  $('#count').value=S.colors.length;$('#countVal').textContent=S.colors.length;$('#palName').value=S.name;$('#kind').value=S.kind;
+  try{history.replaceState(null,'','#'+S.colors.map(c=>c.slice(1)).join('-'))}catch(e){}
+}
+function markCustom(rebase=true){if(S.src.k!=='custom'){S.src={k:'custom'}}if(rebase)S.base=S.colors.slice()}
+
+/* ---------- Presets & Anzahl ---------- */
+function applyPreset(p,n){
+  S.src={k:'preset',id:p.id};S.kind=p.t;S.name=p.id;S.marks=[];
+  if(p.t==='qual')S.colors=p.c.slice(0,n?Math.min(n,p.c.length):p.c.length);
+  else S.colors=sample(p.c,n||(p.t==='div'?9:7));
+  renderAll();
+}
+$('#count').addEventListener('input',e=>{
+  const n=+e.target.value;$('#countVal').textContent=n;
+  if(S.src.k==='preset'){const p=PRESETS[S.src.id];if(p.t==='qual'&&n>p.c.length){e.target.value=p.c.length;$('#countVal').textContent=p.c.length;toast(p.n+' hat '+p.c.length+' Farben');}applyPreset(p,Math.min(n,p.t==='qual'?p.c.length:16));return}
+  if(S.src.k==='image'&&S.img){extract(n);return}
+  if(!S.base)S.base=S.colors.slice();
+  S.colors=sample(S.base,n);S.marks=[];renderAll();
+});
+$('#lib').addEventListener('click',e=>{const sm=e.target.closest('summary');if(!sm||S.libQ)return;const d=sm.parentElement;!d.open?S.libOpen.add(d.dataset.g):S.libOpen.delete(d.dataset.g)});
+$('#libSearch').addEventListener('input',e=>{S.libQ=e.target.value;renderLib()});
+$('#lib').addEventListener('click',e=>{
+  const del=e.target.dataset.del;
+  if(del){e.stopPropagation();storeSaved(loadSaved().filter(p=>p.id!==del));renderLib();return}
+  const b=e.target.closest('.chip');if(!b)return;
+  if(b.dataset.saved){const p=loadSaved().find(x=>x.id===b.dataset.id);if(!p)return;S.colors=p.c.slice();S.marks=[];S.kind=p.t;S.name=p.n;S.src={k:'custom'};S.base=S.colors.slice();renderAll();return}
+  applyPreset(PRESETS[b.dataset.id]);
+});
+
+/* ---------- Bearbeitungen ---------- */
+$('.ops').addEventListener('click',e=>{
+  const op=e.target.dataset.op;if(!op)return;let c=S.colors,order=null;const idx=c.map((_,i)=>i);
+  const map=fn=>c.map(h=>{const[L,C,H]=toLch(h);return fn(L,C,H)});
+  switch(op){
+    case'lighter':c=map((L,C,H)=>lch2hex(L+.04,C,H));break;
+    case'darker':c=map((L,C,H)=>lch2hex(L-.04,C,H));break;
+    case'sat':c=map((L,C,H)=>lch2hex(L,C*1.15,H));break;
+    case'desat':c=map((L,C,H)=>lch2hex(L,C*.85,H));break;
+    case'hueL':c=map((L,C,H)=>lch2hex(L,C,H-Math.PI/18));break;
+    case'hueR':c=map((L,C,H)=>lch2hex(L,C,H+Math.PI/18));break;
+    case'reverse':order=idx.reverse();break;
+    case'sortL':order=idx.sort((a,b)=>hex2lab(c[b])[0]-hex2lab(c[a])[0]);break;
+    case'sortH':{const k=x=>x[1]<.03?99:(x[2]+2*Math.PI)%(2*Math.PI);order=idx.sort((a,b)=>k(toLch(c[a]))-k(toLch(c[b])));break}
+    case'even':{const Ls=c.map(h=>hex2lab(h)[0]),inc=Ls[Ls.length-1]>=Ls[0],lo=Math.min(...Ls),hi=Math.max(...Ls),n=c.length;
+      const order=c.map((h,i)=>i).sort((a,b)=>inc?Ls[a]-Ls[b]:Ls[b]-Ls[a]);
+      const out=c.slice();order.forEach((idx,r)=>{const[,C,H]=toLch(c[idx]);const t=n===1?0:r/(n-1);const L=inc?lo+(hi-lo)*t:hi-(hi-lo)*t;out[idx]=lch2hex(L,C,H)});
+      c=out;break}
+  }
+  if(order){syncMarks();S.marks=order.map(i=>S.marks[i]);c=order.map(i=>c[i])}
+  S.colors=c;markCustom();renderAll();
+});
+
+/* ---------- Bildanalyse ---------- */
+const drop=$('#drop'),fileIn=$('#file'),cv=$('#imgCanvas');
+drop.addEventListener('click',()=>fileIn.click());
+drop.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();fileIn.click()}});
+['dragenter','dragover'].forEach(t=>drop.addEventListener(t,e=>{e.preventDefault();drop.classList.add('over')}));
+['dragleave','drop'].forEach(t=>drop.addEventListener(t,e=>{e.preventDefault();drop.classList.remove('over')}));
+drop.addEventListener('drop',e=>{const fl=e.dataTransfer.files[0];if(fl)loadFile(fl)});
+fileIn.addEventListener('change',e=>{if(e.target.files[0])loadFile(e.target.files[0])});
+document.addEventListener('paste',e=>{const it=[...(e.clipboardData||{}).items||[]].find(i=>i.type.startsWith('image/'));if(it)loadFile(it.getAsFile())});
+function loadFile(file){
+  if(!file.type.startsWith('image/')){toast('Bitte eine Bilddatei wählen');return}
+  const url=URL.createObjectURL(file),img=new Image();
+  img.onload=()=>{S.img=img;const sc=Math.min(1,700/Math.max(img.width,img.height));cv.width=Math.round(img.width*sc);cv.height=Math.round(img.height*sc);
+    cv.getContext('2d',{willReadFrequently:true}).drawImage(img,0,0,cv.width,cv.height);$('#imgWrap').style.display='block';$('#imgOpts').hidden=false;
+    S.name=file.name.replace(/\.[^.]+$/,'').slice(0,40)||'bildpalette';extract(Math.max(+$('#count').value,5))};
+  img.onerror=()=>toast('Bild konnte nicht gelesen werden');
+  img.src=url;
+}
+function extract(k){
+  const img=S.img,c=document.createElement('canvas'),sc=Math.min(1,180/Math.max(img.width,img.height));
+  c.width=Math.max(1,Math.round(img.width*sc));c.height=Math.max(1,Math.round(img.height*sc));
+  const ctx=c.getContext('2d',{willReadFrequently:true});ctx.drawImage(img,0,0,c.width,c.height);
+  const d=ctx.getImageData(0,0,c.width,c.height).data,all=[],allI=[],pts=[],ptsI=[],labAt=[],cw=c.width,chh=c.height;
+  for(let i=0,p=0;i<d.length;i+=4,p++){if(d[i+3]<128){labAt.push(null);continue}const lab=rgb2lab([d[i],d[i+1],d[i+2]]);labAt.push(lab);all.push(lab);allI.push(p);
+    if(Math.hypot(lab[1],lab[2])>=.035&&lab[0]>.12&&lab[0]<.97){pts.push(lab);ptsI.push(p)}}
+  const useP=$('#ignoreGray').checked&&pts.length>k*20,P=useP?pts:all,PI=useP?ptsI:allI;
+  if(P.length<k){toast('Zu wenige Bildpunkte');return}
+  const R=rng(42),cent=[P[Math.floor(R()*P.length)].slice()];
+  const dist=(a,b)=>(a[0]-b[0])**2+(a[1]-b[1])**2+(a[2]-b[2])**2;
+  while(cent.length<k){const ds=P.map(p=>Math.min(...cent.map(c=>dist(p,c))));const tot=ds.reduce((a,b)=>a+b,0);let r=R()*tot,i=0;while(r>ds[i]&&i<ds.length-1){r-=ds[i];i++}cent.push(P[i].slice())}
+  let cnt=new Array(k).fill(0);
+  for(let it=0;it<16;it++){
+    const sum=cent.map(()=>[0,0,0]);cnt=new Array(k).fill(0);
+    for(const p of P){let b=0,bd=Infinity;for(let j=0;j<k;j++){const dd=dist(p,cent[j]);if(dd<bd){bd=dd;b=j}}sum[b][0]+=p[0];sum[b][1]+=p[1];sum[b][2]+=p[2];cnt[b]++}
+    for(let j=0;j<k;j++)if(cnt[j])cent[j]=sum[j].map(v=>v/cnt[j]);
+  }
+  // Repräsentativen Bildpunkt je Farbe suchen: nah am Mittelwert und in ruhiger Umgebung (keine Kantenpixel)
+  const best=cent.map(()=>({s:Infinity,p:0}));
+  P.forEach((lab,n)=>{const p=PI[n],x=p%cw,y=(p/cw)|0;
+    for(let j=0;j<k;j++){const d0=dist(lab,cent[j]);if(d0>best[j].s)continue;let nb=0,nn=0;
+      for(const[dx,dy]of[[-1,0],[1,0],[0,-1],[0,1],[-2,0],[2,0],[0,-2],[0,2]]){const xx=x+dx,yy=y+dy;if(xx<0||yy<0||xx>=cw||yy>=chh)continue;const q=labAt[yy*cw+xx];if(q){nb+=dist(q,cent[j]);nn++}}
+      const sc=d0+(nn?nb/nn:1)*.6;if(sc<best[j].s)best[j]={s:sc,p}}});
+  let res=cent.map((c,j)=>({h:lab2hex(c),n:cnt[j],lab:c,m:{x:(best[j].p%cw+.5)/cw,y:(((best[j].p/cw)|0)+.5)/chh}})).filter(r=>r.n>0);
+  const sb=$('#sortBy').value;
+  if(sb==='L')res.sort((a,b)=>b.lab[0]-a.lab[0]);
+  else if(sb==='count')res.sort((a,b)=>b.n-a.n);
+  else res.sort((a,b)=>Math.atan2(a.lab[2],a.lab[1])-Math.atan2(b.lab[2],b.lab[1]));
+  S.colors=res.map(r=>r.h);S.marks=res.map(r=>r.m);S.src={k:'image'};S.kind='qual';S.base=S.colors.slice();renderAll();
+}
+$('#ignoreGray').addEventListener('change',()=>S.img&&extract(S.colors.length));
+$('#sortBy').addEventListener('change',()=>S.img&&extract(S.colors.length));
+function sampleAt(fx,fy){ // Mittelwert über 3×3 Pixel, damit Bildrauschen nicht stört
+  const x=Math.round(fx*(cv.width-1)),y=Math.round(fy*(cv.height-1)),x0=Math.max(0,x-1),y0=Math.max(0,y-1),
+        w=Math.min(cv.width-x0,3),h=Math.min(cv.height-y0,3),d=cv.getContext('2d',{willReadFrequently:true}).getImageData(x0,y0,w,h).data;
+  let r=0,g=0,b=0,n=0;for(let i=0;i<d.length;i+=4){if(d[i+3]<128)continue;r+=d[i];g+=d[i+1];b+=d[i+2];n++}
+  return n?rgb2hex([r/n,g/n,b/n]):'#FFFFFF';
+}
+cv.addEventListener('click',e=>{
+  const r=cv.getBoundingClientRect(),fx=(e.clientX-r.left)/r.width,fy=(e.clientY-r.top)/r.height,h=sampleAt(fx,fy);
+  if(S.colors.length>=16){toast('Maximal 16 Farben');return}
+  syncMarks();S.colors.push(h);S.marks.push({x:fx,y:fy});markCustom();renderAll();toast(h+' hinzugefügt');
+});
+function moveMark(i,x,y,b){
+  x=Math.max(0,Math.min(1,x));y=Math.max(0,Math.min(1,y));S.marks[i]={x,y};
+  const h=sampleAt(x,y);S.colors[i]=h;b.style.left=x*100+'%';b.style.top=y*100+'%';updateSwatch(i,h);schedule();
+}
+let mdrag=null,mkTimer=0;const marksBox=$('#marks');
+marksBox.addEventListener('pointerdown',e=>{const b=e.target.closest('.mk');if(!b)return;e.preventDefault();b.focus();b.setPointerCapture(e.pointerId);mdrag={i:+b.dataset.i,b};b.classList.add('drag')});
+marksBox.addEventListener('pointermove',e=>{if(!mdrag)return;const r=cv.getBoundingClientRect();moveMark(mdrag.i,(e.clientX-r.left)/r.width,(e.clientY-r.top)/r.height,mdrag.b)});
+const endDrag=()=>{if(!mdrag)return;mdrag.b.classList.remove('drag');const i=mdrag.i;mdrag=null;S.base=S.colors.slice();renderStrip();renderLib();
+  try{history.replaceState(null,'','#'+S.colors.map(c=>c.slice(1)).join('-'))}catch(e){};const m=document.querySelector(`.mk[data-i="${i}"]`);if(m)m.focus()};
+marksBox.addEventListener('pointerup',endDrag);marksBox.addEventListener('pointercancel',endDrag);
+marksBox.addEventListener('keydown',e=>{const b=e.target.closest('.mk');if(!b)return;
+  const st=e.shiftKey?.05:.01,dir={ArrowLeft:[-st,0],ArrowRight:[st,0],ArrowUp:[0,-st],ArrowDown:[0,st]}[e.key];if(!dir)return;
+  e.preventDefault();const i=+b.dataset.i,m=S.marks[i];moveMark(i,m.x+dir[0],m.y+dir[1],b);
+  clearTimeout(mkTimer);mkTimer=setTimeout(()=>{S.base=S.colors.slice()},300)});
+
+/* ---------- Übrige Steuerung ---------- */
+$('#palName').addEventListener('input',e=>{S.name=e.target.value;renderCode()});
+$('#kind').addEventListener('change',e=>{S.kind=e.target.value;schedule()});
+$('#sim').addEventListener('change',e=>{S.sim=e.target.value;renderFigs()});
+$('#skipLight').addEventListener('change',e=>{S.skipLight=e.target.checked;schedule()});
+$('#bgWhite').addEventListener('click',()=>{S.dark=false;$('#bgWhite').setAttribute('aria-pressed','true');$('#bgBlack').setAttribute('aria-pressed','false');renderFigs()});
+$('#bgBlack').addEventListener('click',()=>{S.dark=true;$('#bgBlack').setAttribute('aria-pressed','true');$('#bgWhite').setAttribute('aria-pressed','false');renderFigs()});
+$('#tabs').addEventListener('click',e=>{const k=e.target.dataset.k;if(!k)return;S.tab=k;renderTabs();renderCode()});
+$('#copyCode').addEventListener('click',()=>copy($('#code').textContent,'Code kopiert'));
+$('#copyAll').addEventListener('click',()=>copy(S.colors.join(', '),'Hex-Codes kopiert'));
+$('#dlCode').addEventListener('click',()=>download(`${slug()}.${EXT[S.tab]}`,$('#code').textContent));
+$('#dlGpl').addEventListener('click',()=>download(`${slug()}.gpl`,`GIMP Palette\nName: ${S.name}\nColumns: ${S.colors.length}\n#\n`+S.colors.map(h=>hex2rgb(h).map(v=>String(v).padStart(3)).join(' ')+'\t'+h).join('\n')+'\n'));
+$('#dlSvg').addEventListener('click',()=>{const w=120,n=S.colors.length;
+  download(`${slug()}.svg`,`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${w*n} 150" font-family="Helvetica, Arial, sans-serif">`+S.colors.map((h,i)=>`<rect x="${i*w}" width="${w}" height="110" fill="${h}"/><text x="${i*w+w/2}" y="134" text-anchor="middle" font-size="16">${h}</text>`).join('')+'</svg>','image/svg+xml')});
+$('#roles').addEventListener('click',e=>{const b=e.target.closest('.role');if(b)copy(b.dataset.h,b.dataset.h+' kopiert')});
+$('#savePal').addEventListener('click',()=>{
+  const a=loadSaved(),id='u'+Date.now();a.unshift({id,n:S.name||'Eigene Palette',t:S.kind,c:S.colors.slice()});
+  if(storeSaved(a.slice(0,24))){renderLib();toast('Palette gespeichert')}else toast('Speichern ist in dieser Umgebung nicht möglich – Code exportieren');
+});
+
+/* ---------- Start ---------- */
+(function init(){
+  const h=decodeURIComponent(location.hash.slice(1));
+  if(/^([0-9a-f]{6})(-[0-9a-f]{6})+$/i.test(h)){S.colors=h.split('-').map(x=>'#'+x.toUpperCase());S.src={k:'custom'};S.base=S.colors.slice();S.name='palette'}
+  renderTabs();renderAll();
+  document.querySelectorAll('#lib details').forEach(d=>d.open=false); // Start: alle Gruppen zugeklappt
+})();
+</script>
+</body>
+</html>
