@@ -1,6 +1,7 @@
 # Farbpaletten für wissenschaftliche Abbildungen
 
-Ein Werkzeug zum Erstellen, Prüfen und Exportieren von Farbpaletten für wissenschaftliche Diagramme – als **eine einzige HTML-Datei**, ohne Installation, ohne Build-Schritt und ohne Server.
+Ein Werkzeug zum Erstellen, Prüfen und Exportieren von Farbpaletten für wissenschaftliche Diagramme 
+– als **eine einzige HTML-Datei**, ohne Installation, ohne Build-Schritt und ohne Server.
 
 ![Screenshot](docs/screenshot.png)
 
